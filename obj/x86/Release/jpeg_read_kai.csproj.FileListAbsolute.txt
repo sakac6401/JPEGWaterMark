@@ -1,0 +1,28 @@
+H:\Documents and Settings\mitsu\my documents\visual studio 2010\Projects\jpeg_read_kai\jpeg_read_kai\bin\Release\jpeg_read_kai.exe
+H:\Documents and Settings\mitsu\my documents\visual studio 2010\Projects\jpeg_read_kai\jpeg_read_kai\bin\Release\jpeg_read_kai.pdb
+H:\Documents and Settings\mitsu\my documents\visual studio 2010\Projects\jpeg_read_kai\jpeg_read_kai\obj\x86\Release\ResolveAssemblyReference.cache
+H:\Documents and Settings\mitsu\my documents\visual studio 2010\Projects\jpeg_read_kai\jpeg_read_kai\obj\x86\Release\jpeg_read_kai.exe
+H:\Documents and Settings\mitsu\my documents\visual studio 2010\Projects\jpeg_read_kai\jpeg_read_kai\obj\x86\Release\jpeg_read_kai.pdb
+F:\mydocument\jpeg_read_kai\obj\x86\Release\ResolveAssemblyReference.cache
+F:\mydocument\jpeg_read_kai\obj\x86\Release\jpeg_read_kai.exe
+F:\mydocument\jpeg_read_kai\bin\Release\jpeg_read_kai.exe
+F:\mydocument\jpeg_read_kai\bin\Release\jpeg_read_kai.pdb
+F:\mydocument\jpeg_read_kai\obj\x86\Release\jpeg_read_kai.pdb
+H:\Documents and Settings\mitsu\デスクトップ\jpeg_read_kai\obj\x86\Release\jpeg_read_kai.exe
+H:\Documents and Settings\mitsu\デスクトップ\jpeg_read_kai\obj\x86\Release\jpeg_read_kai.pdb
+H:\Documents and Settings\mitsu\デスクトップ\jpeg_read_kai\bin\Release\jpeg_read_kai.exe
+H:\Documents and Settings\mitsu\デスクトップ\jpeg_read_kai\bin\Release\jpeg_read_kai.pdb
+H:\Documents and Settings\mitsu\デスクトップ\jpeg_read_kai\obj\x86\Release\ResolveAssemblyReference.cache
+H:\Documents and Settings\mitsu\デスクトップ\jpeg_read_kai\obj\x86\Release\ConsoleApplication1.MainForm.resources
+H:\Documents and Settings\mitsu\デスクトップ\jpeg_read_kai\obj\x86\Release\GenerateResource.read.1.tlog
+H:\Documents and Settings\mitsu\デスクトップ\jpeg_read_kai\obj\x86\Release\GenerateResource.write.1.tlog
+H:\Documents and Settings\mitsu\デスクトップ\jpeg_read_kai\obj\x86\Release\ConsoleApplication1.Properties.Resources.resources
+C:\Documents and Settings\mitsu\デスクトップ\jpeg_read_kai\obj\x86\Release\jpeg_read_kai.exe
+C:\Documents and Settings\mitsu\デスクトップ\jpeg_read_kai\obj\x86\Release\jpeg_read_kai.pdb
+C:\Documents and Settings\mitsu\デスクトップ\jpeg_read_kai\bin\Release\jpeg_read_kai.exe
+C:\Documents and Settings\mitsu\デスクトップ\jpeg_read_kai\bin\Release\jpeg_read_kai.pdb
+C:\Documents and Settings\mitsu\デスクトップ\jpeg_read_kai\obj\x86\Release\ResolveAssemblyReference.cache
+C:\Documents and Settings\mitsu\デスクトップ\jpeg_read_kai\obj\x86\Release\ConsoleApplication1.MainForm.resources
+C:\Documents and Settings\mitsu\デスクトップ\jpeg_read_kai\obj\x86\Release\ConsoleApplication1.Properties.Resources.resources
+C:\Documents and Settings\mitsu\デスクトップ\jpeg_read_kai\obj\x86\Release\GenerateResource.read.1.tlog
+C:\Documents and Settings\mitsu\デスクトップ\jpeg_read_kai\obj\x86\Release\GenerateResource.write.1.tlog

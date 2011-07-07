@@ -1,0 +1,5 @@
+H:\Documents and Settings\mitsu\Local Settings\Application Data\Temporary Projects\ConsoleApplication1\bin\Debug\ConsoleApplication1.exe
+H:\Documents and Settings\mitsu\Local Settings\Application Data\Temporary Projects\ConsoleApplication1\bin\Debug\ConsoleApplication1.pdb
+H:\Documents and Settings\mitsu\Local Settings\Application Data\Temporary Projects\ConsoleApplication1\obj\x86\Debug\ResolveAssemblyReference.cache
+H:\Documents and Settings\mitsu\Local Settings\Application Data\Temporary Projects\ConsoleApplication1\obj\x86\Debug\ConsoleApplication1.exe
+H:\Documents and Settings\mitsu\Local Settings\Application Data\Temporary Projects\ConsoleApplication1\obj\x86\Debug\ConsoleApplication1.pdb
