@@ -11,12 +11,13 @@ namespace ConsoleApplication1
     /// </summary>
     public class APP0 : marker_base
     {
-        public int dpiX;
-        public int dpiY;
-        public int thumb_w;
-        public int thumb_h;
-        byte[] JFIF = new byte[4] { 0x4a, 0x46, 0x49, 0x46 };
-        byte[] temp = new byte[4] { 0x0, 0x1, 0x1, 0x1 };
+        byte[] id = new byte[]{ 0xff, 0xe0 };
+        public int dpiX;            //X解像度
+        public int dpiY;            //Y解像度
+        public int thumb_w;         //サムネイル幅
+        public int thumb_h;         //サムネイル高
+        byte[] JFIF = new byte[4] { 0x4a, 0x46, 0x49, 0x46 };   //JFIF@hex
+        byte[] temp = new byte[4] { 0x0, 0x1, 0x1, 0x1 };       //
 
         //Instance constructor.
         public APP0()
@@ -35,7 +36,15 @@ namespace ConsoleApplication1
             thumb_w = prev.thumb_w;
             thumb_h = prev.thumb_h;
         }
-
+        public APP0(ref BinaryReader br_in)
+        {
+            read_headsize(ref br_in);
+            br_in.ReadBytes(8);
+            dpiX = ByteArrToInt(br_in.ReadBytes(2));
+            dpiY = ByteArrToInt(br_in.ReadBytes(2));
+            thumb_w = br_in.ReadByte();
+            thumb_h = br_in.ReadByte();
+        }
         public override void ReadMarker(ref BinaryReader br_in)
         {
             read_headsize(ref br_in);

@@ -9,11 +9,14 @@ namespace ConsoleApplication1
 {
     public class CBlock
     {
-        public int block_width;
+        public int block_width;         //画像をブロック
         public int block_height;
         public int b_len;
-        public int[][][] data = null;
 
+        /// <summary>
+        /// 量子化DCT係数[色番号][ブロック番号][係数番号(0-63)]
+        /// </summary>
+        public int[][][] data = null;
 
         public CBlock()
         {
@@ -35,6 +38,11 @@ namespace ConsoleApplication1
                     data[i][j] = new int[64];
                 }
             }
+        }
+
+        public CBlock(SOF0 sof0)
+        {
+
         }
 
         public CBlock(CBlock prev)

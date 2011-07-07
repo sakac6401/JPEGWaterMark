@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using Calcul;
 
 namespace ConsoleApplication1
 {
@@ -12,13 +13,14 @@ namespace ConsoleApplication1
         const int AC = 1;
         const int EOB = 0x00;
         static int[] t_sel = { 0, 1, 1 };
-
+        
         public static void HuffmanDecode(ref Cjpeg cj)
         {
             int count = 0;
             int c_value;
             int v_length;
             int z_run;
+            
             for (int i = 0; i < (cj.cb.block_width * cj.cb.block_height); i++)
             {
                 for (int k = 0; k < 3; k++)

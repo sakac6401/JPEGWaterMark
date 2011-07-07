@@ -26,3 +26,12 @@ C:\Documents and Settings\mitsu\デスクトップ\jpeg_read_kai\obj\x86\Debug\G
 C:\Documents and Settings\mitsu\デスクトップ\jpeg_read_kai\obj\x86\Debug\GenerateResource.write.1.tlog
 C:\Documents and Settings\mitsu\デスクトップ\jpeg_read_kai\obj\x86\Debug\jpeg_read_kai.exe
 C:\Documents and Settings\mitsu\デスクトップ\jpeg_read_kai\obj\x86\Debug\jpeg_read_kai.pdb
+H:\Documents and Settings\mitsu\hoge\obj\x86\Debug\jpeg_read_kai.exe
+H:\Documents and Settings\mitsu\hoge\obj\x86\Debug\jpeg_read_kai.pdb
+H:\Documents and Settings\mitsu\hoge\obj\x86\Debug\ResolveAssemblyReference.cache
+H:\Documents and Settings\mitsu\hoge\obj\x86\Debug\ConsoleApplication1.MainForm.resources
+H:\Documents and Settings\mitsu\hoge\obj\x86\Debug\ConsoleApplication1.Properties.Resources.resources
+H:\Documents and Settings\mitsu\hoge\obj\x86\Debug\GenerateResource.read.1.tlog
+H:\Documents and Settings\mitsu\hoge\obj\x86\Debug\GenerateResource.write.1.tlog
+H:\Documents and Settings\mitsu\hoge\bin\Debug\jpeg_read_kai.exe
+H:\Documents and Settings\mitsu\hoge\bin\Debug\jpeg_read_kai.pdb

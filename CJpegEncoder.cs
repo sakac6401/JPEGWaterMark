@@ -153,7 +153,7 @@ namespace ConsoleApplication1
             int code_len = 0;
             c_len = 0;
             v_code = 0;
-            CbinaryTree cbt = cj.dht.table[cj.sof.t_sel[YCbCr], AC_DC];
+            CbinaryTree cbt = cj.dht.table[cj.sos.DHTSelDC[YCbCr], AC_DC];
 
             //葉探索、終着ノードを求める
             for (int i = 0; i < cbt.t_reaf.Length; i++)

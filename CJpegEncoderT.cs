@@ -15,8 +15,6 @@ namespace ConsoleApplication1
         CBitWriter cbw = null;
         BinaryWriter bw = null;
 
-
-
         static public void WriteFile(ref Cjpeg cj, string path)
         {
             byte[] soi =  new byte[2]{ 0xff, 0xd8 };
@@ -40,7 +38,7 @@ namespace ConsoleApplication1
             bw.Close();
         }
 
-        static public void WriteImgData(ref Cjpeg cj, ref BinaryWriter bw)
+        static void WriteImgData(ref Cjpeg cj, ref BinaryWriter bw)
         {
             byte v_len;
             byte zero_run;
@@ -150,8 +148,8 @@ namespace ConsoleApplication1
             int code_len = 0;
             c_len = 0;
             v_code = 0;
-            CbinaryTree cbt = cj.dht.table[cj.sof.t_sel[YCbCr], AC_DC];
-
+            //CbinaryTree cbt = cj.dht.table[cj.sof.t_sel[YCbCr], AC_DC];
+            CbinaryTree cbt = cj.dht.table[cj.sos.DHTSelDC[YCbCr] , AC_DC];
             //葉探索、終着ノードを求める
             for (int i = 0; i < cbt.t_reaf.Length; i++)
             {

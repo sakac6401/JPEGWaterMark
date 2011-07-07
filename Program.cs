@@ -48,7 +48,14 @@ namespace ConsoleApplication1
 
             switch (Console.ReadLine())
             {
+                case "t":
+                    cj_raw = new Cjpeg(args[0]);
+                    CJpegDecoderT.HuffmanDecode(ref cj_raw);
+                    dst_path = args[0];
+                    dst_path = dst_path.Replace(".jpg", "_m.jpg");
+                    CJpegEncoderT.WriteFile(ref cj_raw, dst_path);
 
+                    break;
                 case "r":
                     for (int i = 0; i < args.Length; i++)
                     {

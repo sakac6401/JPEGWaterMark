@@ -8,18 +8,17 @@ namespace ConsoleApplication1
 {
     public class Cjpeg
     {
-        public APP0 app0 = new APP0();
         public DQT dqt = new DQT();
         public DHT dht = new DHT();
-        public SOF0 sof = new SOF0();
-        public SOS sos = new SOS();
+        public APP0 app0 = null;
+        public SOF0 sof = null;
+        public SOS sos = null;
         public CBlock cb = null;
-        BinaryReader br;
 
         public Cjpeg(string path)
         {
-            br = new BinaryReader(File.Open(path, FileMode.Open));
-            read_file();
+            BinaryReader br = new BinaryReader(File.Open(path, FileMode.Open));
+            read_file(br);
             cb = new CBlock(sof.width / 8, sof.height / 8);
             br.Close();
         }
@@ -34,7 +33,7 @@ namespace ConsoleApplication1
             cb = new CBlock(prev.cb);
         }
 
-        public void read_file()
+        public void read_file(BinaryReader br)
         {
             for (int i = 0; br.BaseStream.Position < br.BaseStream.Length; i++)
             {
@@ -43,7 +42,8 @@ namespace ConsoleApplication1
                     switch (br.ReadByte())
                     {
                         case 0xe0:
-                            app0.ReadMarker(ref br);
+                            app0 = new APP0(ref br);
+                            //app0.ReadMarker(ref br);
                             break;
 
                         case 0xdb:
@@ -51,15 +51,18 @@ namespace ConsoleApplication1
                             break;
 
                         case 0xc0:
-                            sof.ReadMarker(ref br);
+                            sof = new SOF0(ref br);
+                            //sof.ReadMarker(ref br);
                             break;
 
                         case 0xc4:
+                            //dht = new DHT(ref br);
                             dht.ReadMarker(ref br);
                             break;
 
                         case 0xda:
-                            sos.ReadMarker(ref br);
+                            sos = new SOS(ref br);
+                            //sos.ReadMarker(ref br);
                             break;
 
                         case 0xd9:
@@ -72,17 +75,4 @@ namespace ConsoleApplication1
             }
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

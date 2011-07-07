@@ -404,7 +404,7 @@ namespace ConsoleApplication1
                 {
                     for (int j = 0; j < 64; j++)
                     {
-                        cj.cb.data[k][i][j] *= cj.dqt.table[cj.sof.t_sel[k]][j];
+                        cj.cb.data[k][i][j] *= cj.dqt.table[cj.sof.DQTSelecter[k]][j];
                     }
                 }
             }
@@ -418,7 +418,7 @@ namespace ConsoleApplication1
                 {
                     for (int j = 0; j < 64; j++)
                     {
-                        cj.cb.data[k][i][j] = (int)Math.Round((double)(cj.cb.data[k][i][j] / cj.dqt.table[cj.sof.t_sel[k]][j]));
+                        cj.cb.data[k][i][j] = (int)Math.Round((double)(cj.cb.data[k][i][j] / cj.dqt.table[cj.sof.DQTSelecter[k]][j]));
                     }
                 }
             }

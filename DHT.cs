@@ -12,9 +12,10 @@ namespace ConsoleApplication1
     public class DHT : marker_base
     {
         public CbinaryTree[,] table;
+        byte[] id = new byte[] { 0xff, 0xc4 };
+        //public CbinaryTree[,] table = new CbinaryTree[2, 2];
         public DHT()
         {
-            id = new byte[2] { 0xff, 0xc4 };
             table = new CbinaryTree[2, 2];
         }
 
@@ -24,6 +25,24 @@ namespace ConsoleApplication1
             head_length = prev.head_length;
             prev.id.CopyTo(id, 0);
             table = prev.table;
+        }
+
+        public DHT(ref BinaryReader br_in)
+        {
+            try
+            {
+                read_headsize(ref br_in);
+                int table_id = br_in.Read();
+                int color = (table_id & 0x0f);
+                int ac_dc = (table_id & 0xf0) >> 4;
+
+                table[color, ac_dc] = new CbinaryTree(br_in.ReadBytes(16));
+                table[color, ac_dc].SetValue(br_in.ReadBytes(table[color, ac_dc].sum_reaves));
+            }
+            catch
+            {
+                Console.WriteLine("dht.read error");
+            }
         }
 
         public override void ReadMarker(ref BinaryReader br_in)
@@ -49,7 +68,6 @@ namespace ConsoleApplication1
 
             for (int i = 0; i < 2; i++)
             {
-
                 for (int j = 0; j < 2; j++)
                 {
                     bw.Write(id);
