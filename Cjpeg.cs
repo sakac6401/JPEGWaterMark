@@ -8,11 +8,11 @@ namespace ConsoleApplication1
 {
     public class Cjpeg
     {
-        public DQT dqt = new DQT();
-        public DHT dht = new DHT();
-        public APP0 app0 = null;
-        public SOF0 sof = null;
-        public SOS sos = null;
+        public DQT dqt = new DQT();     //量子化テーブル
+        public DHT dht = new DHT();     //ハフマンテーブル
+        public APP0 app0 = null;        
+        public SOF0 sof = null;         //ファイルサイズ情報
+        public SOS sos = null;          //
         public CBlock cb = null;
 
         public Cjpeg(string path)
@@ -43,7 +43,6 @@ namespace ConsoleApplication1
                     {
                         case 0xe0:
                             app0 = new APP0(ref br);
-                            //app0.ReadMarker(ref br);
                             break;
 
                         case 0xdb:
@@ -52,17 +51,14 @@ namespace ConsoleApplication1
 
                         case 0xc0:
                             sof = new SOF0(ref br);
-                            //sof.ReadMarker(ref br);
                             break;
 
                         case 0xc4:
-                            //dht = new DHT(ref br);
                             dht.ReadMarker(ref br);
                             break;
 
                         case 0xda:
                             sos = new SOS(ref br);
-                            //sos.ReadMarker(ref br);
                             break;
 
                         case 0xd9:
