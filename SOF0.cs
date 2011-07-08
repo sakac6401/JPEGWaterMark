@@ -12,7 +12,7 @@ namespace ConsoleApplication1
         public int height;              //画像高
         public int width;               //画像幅
         public byte acc_sampling;       //1ブロックのサンプル数
-        public byte n_sample;           //色サンプル数
+        public byte numSample;           //色サンプル数
         public byte[] subsample_ratio;  //サブサンプリング比[色番号]
         //public byte[] t_sel;            //量子化テーブルセレクタ[色番号]
         public int[] SampleRatioV;      //垂直サンプリング比[色番号]
@@ -28,19 +28,23 @@ namespace ConsoleApplication1
                 acc_sampling = br_in.ReadByte();
                 height = (br_in.ReadByte() << 8) + br_in.ReadByte();
                 width = (br_in.Read() << 8) + br_in.ReadByte();
-                n_sample = br_in.ReadByte();
+                numSample = br_in.ReadByte();
 
-                subsample_ratio = new byte[n_sample];
-                SampleRatioV = new int[n_sample];
-                SampleRatioH = new int[n_sample];
-                DQTSelecter = new byte[n_sample];
+                subsample_ratio = new byte[numSample];
+                SampleRatioV = new int[numSample];
+                SampleRatioH = new int[numSample];
+                DQTSelecter = new byte[numSample];
                 //t_sel = new byte[n_sample];
 
                 //色情報読取
-                for (int i = 0; i < n_sample; i++)
+                for (int i = 0; i < numSample; i++)
                 {
+                    byte buf;
                     br_in.ReadByte();
-                    subsample_ratio[i] = br_in.ReadByte();
+                    //subsample_ratio[i] = br_in.ReadByte();
+                    buf = br_in.ReadByte();
+                    SampleRatioH[i] = ((buf & 0xf0) >> 4);
+                    SampleRatioV[i] = (buf & 0x0f);
                     DQTSelecter[i] = br_in.ReadByte();
                     //t_sel[i] = br_in.ReadByte();
                 }
@@ -55,37 +59,6 @@ namespace ConsoleApplication1
         {
             throw new NotImplementedException();
         }
-
-        //public override void ReadMarker(ref BinaryReader br_in)
-        //{
-        //    try
-        //    {
-        //        read_headsize(ref br_in);
-        //        acc_sampling = br_in.ReadByte();
-        //        height = (br_in.ReadByte() << 8) + br_in.ReadByte();
-        //        width = (br_in.Read() << 8) + br_in.ReadByte();
-        //        n_sample = br_in.ReadByte();
-
-        //        subsample_ratio = new byte[n_sample];
-        //        SampleRatioV = new int[n_sample];
-        //        SampleRatioH = new int[n_sample];
-        //        DQTSelecter = new byte[n_sample];
-        //        //t_sel = new byte[n_sample];
-
-        //        //色情報読取
-        //        for (int i = 0; i < n_sample; i++)          
-        //        {
-        //            br_in.ReadByte();
-        //            subsample_ratio[i] = br_in.ReadByte();
-        //            DQTSelecter[i] = br_in.ReadByte();
-        //            //t_sel[i] = br_in.ReadByte();
-        //        }
-        //    }
-        //    catch
-        //    {
-        //        Console.WriteLine("sof0.read error");
-        //    }
-        //}
 
         public SOF0()
         {
@@ -102,7 +75,7 @@ namespace ConsoleApplication1
             width = prev.width;
 
             acc_sampling = prev.acc_sampling;
-            n_sample = prev.n_sample;
+            numSample = prev.numSample;
 
             subsample_ratio = new byte[prev.subsample_ratio.Length];
             prev.subsample_ratio.CopyTo(subsample_ratio, 0);
@@ -121,8 +94,8 @@ namespace ConsoleApplication1
             bw.Write(acc_sampling);
             WriteWord(ref bw, height);
             WriteWord(ref bw, width);
-            bw.Write(n_sample);
-            for (int i = 0; i < n_sample; i++)
+            bw.Write(numSample);
+            for (int i = 0; i < numSample; i++)
             {
                 bw.Write((byte)(i + 1));
                 bw.Write(subsample_ratio[i]);

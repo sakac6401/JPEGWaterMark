@@ -19,7 +19,8 @@ namespace ConsoleApplication1
         {
             BinaryReader br = new BinaryReader(File.Open(path, FileMode.Open));
             read_file(br);
-            cb = new CBlock(sof.width / 8, sof.height / 8);
+            //cb = new CBlock(sof.width / 8, sof.height / 8);
+            cb = new CBlock(this.sof);
             br.Close();
         }
 

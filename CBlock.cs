@@ -9,14 +9,35 @@ namespace ConsoleApplication1
 {
     public class CBlock
     {
-        public int block_width;         //画像をブロック
+        /// <summary>
+        /// 画像をブロック化したときのブロック幅
+        /// </summary>
+        public int block_width;
+        /// <summary>
+        /// 画像をブロック化したときのブロック高
+        /// </summary>
         public int block_height;
+        /// <summary>
+        /// ブロック長=block_width * block_height
+        /// </summary>
         public int b_len;
-
         /// <summary>
         /// 量子化DCT係数[色番号][ブロック番号][係数番号(0-63)]
         /// </summary>
         public int[][][] data = null;
+
+        /// <summary>
+        /// 画像をブロックに分割したときのブロック幅[色番号]
+        /// </summary>
+        public int[] blockWidth = null;
+        /// <summary>
+        /// 画像をブロックに分割したときのブロック高[色番号]
+        /// </summary>
+        public int[] blockHeight = null;
+        /// <summary>
+        /// ブロック長[色番号]
+        /// </summary>
+        public int[] blockLength = null;
 
         public CBlock()
         {
@@ -42,7 +63,26 @@ namespace ConsoleApplication1
 
         public CBlock(SOF0 sof0)
         {
+            data = new int[sof0.numSample][][];         //色数
+            blockWidth = new int[sof0.numSample];
+            blockHeight = new int[sof0.numSample];      //
+            blockLength = new int[sof0.numSample];      //
+            double buf;
+            for (int i = 0; i < sof0.numSample; i++)    //水平方向処理
+            {
+                buf = (double)sof0.width / 8.0 * ((double)sof0.SampleRatioH[i] / (double)sof0.SampleRatioH[0]);
+                blockWidth[i] = (int)Math.Ceiling(buf);
 
+                buf = (double)sof0.height / 8.0 * ((double)sof0.SampleRatioV[i] / (double)sof0.SampleRatioV[0]);
+                blockHeight[i] = (int)Math.Ceiling(buf);
+
+                blockLength[i] = blockWidth[i] * blockHeight[i];
+                data[i] = new int[blockLength[i]][];
+                for (int j = 0; j < 64; j++)
+                {
+                    data[i][j] = new int[64];
+                }
+            }
         }
 
         public CBlock(CBlock prev)

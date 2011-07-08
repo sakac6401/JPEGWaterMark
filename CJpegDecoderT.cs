@@ -20,7 +20,7 @@ namespace ConsoleApplication1
             int c_value;
             int v_length;
             int z_run;
-            
+
             for (int i = 0; i < (cj.cb.block_width * cj.cb.block_height); i++)
             {
                 for (int k = 0; k < 3; k++)
@@ -30,7 +30,7 @@ namespace ConsoleApplication1
                     cj.cb.data[k][i][0] = GetValue(ref cj, c_value);
 
                     //AC
-                    for (int j = 1; j < 64;j++)
+                    for (int j = 1; j < 64; j++)
                     {
                         c_value = GetValueLength(ref cj, t_sel[k], AC);
 
@@ -59,6 +59,45 @@ namespace ConsoleApplication1
                     //count = ((count + 1) % 3);
                 }
             }
+
+            //for (int i = 0; i < (cj.cb.block_width * cj.cb.block_height); i++)
+            //{
+            //    for (int k = 0; k < 3; k++)
+            //    {
+            //        //DC
+            //        c_value = GetValueLength(ref cj, t_sel[k], DC);
+            //        cj.cb.data[k][i][0] = GetValue(ref cj, c_value);
+
+            //        //AC
+            //        for (int j = 1; j < 64;j++)
+            //        {
+            //            c_value = GetValueLength(ref cj, t_sel[k], AC);
+
+            //            if (c_value == EOB)
+            //            {
+            //                break;
+            //            }
+            //            else
+            //            {
+            //                z_run = (c_value & 0xf0) >> 4;
+            //                if (z_run != 0)
+            //                {
+            //                    int aaa;
+            //                }
+            //                j += z_run;
+            //                if (j > 63)
+            //                {
+            //                    break;
+            //                }
+            //                v_length = (c_value & 0x0f);
+            //                cj.cb.data[k][i][j] = GetValue(ref cj, v_length);
+            //                //Console.Write(cj.cb.data[count][i, j] + ",");
+            //            }
+            //        }
+
+            //        //count = ((count + 1) % 3);
+            //    }
+            //}
         }
 
         /// <summary>
