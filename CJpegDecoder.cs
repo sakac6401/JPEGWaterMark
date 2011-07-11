@@ -44,10 +44,6 @@ namespace ConsoleApplication1
                         else
                         {
                             z_run = (c_value & 0xf0) >> 4;
-                            if (z_run != 0)
-                            {
-                                int aaa;
-                            }
                             j += z_run;
                             if (j > 63)
                             {

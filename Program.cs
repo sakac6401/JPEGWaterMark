@@ -54,7 +54,6 @@ namespace ConsoleApplication1
                     dst_path = args[0];
                     dst_path = dst_path.Replace(".jpg", "_m.jpg");
                     CJpegEncoderT.WriteFile(ref cj_raw, dst_path);
-
                     break;
                 case "r":
                     for (int i = 0; i < args.Length; i++)

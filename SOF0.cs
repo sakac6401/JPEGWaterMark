@@ -98,7 +98,7 @@ namespace ConsoleApplication1
             for (int i = 0; i < numSample; i++)
             {
                 bw.Write((byte)(i + 1));
-                bw.Write(subsample_ratio[i]);
+                bw.Write((byte)((SampleRatioH[i] << 4) + SampleRatioV[i]));
                 bw.Write(DQTSelecter[i]);
             }
         }

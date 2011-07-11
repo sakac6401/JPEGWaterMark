@@ -76,6 +76,8 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="marker_base.cs" />
+    <Compile Include="MCU.cs" />
+    <Compile Include="MCUArray.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DHT.cs" />

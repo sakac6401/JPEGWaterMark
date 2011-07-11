@@ -26,14 +26,9 @@ namespace ConsoleApplication1
             cj.sof.WriteMarker(ref bw);
             cj.dht.WriteMarker(ref bw);
             cj.sos.WriteMarker(ref bw);
-            try
-            {
+
+
                 WriteImgData(ref cj, ref bw);
-            }
-            catch
-            {
-                Console.WriteLine("WriteImgData Erorr");
-            }
             bw.Write(eoi);
             bw.Close();
         }
@@ -47,23 +42,21 @@ namespace ConsoleApplication1
             int l_code;
             int EOB_idx;
             CBitWriter cbw = new CBitWriter(ref bw);
-            //ブロック長ループ
-            for (int i = 0; i < cj.cb.b_len; i++)
+
+            //MCUループ
+            for (int i = 0; i < cj.mcuarray.MCULength; i++)
             {
                 //色ループ
-                for (int j = 0; j < 3; j++)
+                for (int j = 0; j < cj.mcuarray.numBlock; j++)
                 {
-                            if (i == 4095)
-                            {
-                                int aaaaa;
-                            }
-
                     EOB_idx = SearchEOBStart(ref cj, j, i);
                     //DC
-                    v_len = GetValueLength(cj.cb.data[j][i][0]);
-                    GetCode(ref cj, v_len, j, DC, out v_code,out l_code);
+                    //v_len = GetValueLength(cj.cb.data[j][i][0]);
+                    v_len = GetValueLength(cj.mcuarray.MCUs[i].DCTCoef[j][0]);
+                    GetCode(ref cj, v_len, cj.mcuarray.colorTable[j], DC, out v_code, out l_code);
                     cbw.WriteBit(v_code, l_code);
-                    cbw.WriteBit(cj.cb.data[j][i][0], v_len);
+                    //cbw.WriteBit(cj.cb.data[j][i][0], v_len);
+                    cbw.WriteBit(cj.mcuarray.MCUs[i].DCTCoef[j][0], v_len);
 
                     //AC
                     zero_run = 0;
@@ -71,33 +64,84 @@ namespace ConsoleApplication1
                     {
                         if (k == EOB_idx)
                         {
-                            GetCode(ref cj, EOB, j, AC, out v_code, out l_code);
+                            GetCode(ref cj, EOB, cj.mcuarray.colorTable[j], AC, out v_code, out l_code);
                             cbw.WriteBit(v_code, l_code);
 
                             break;
                         }
 
-                        else if (cj.cb.data[j][i][k] == 0)
+                        //else if (cj.cb.data[j][i][k] == 0)
+                        else if (cj.mcuarray.MCUs[i].DCTCoef[j][k] == 0)
                         {
                             zero_run++;
                             if (zero_run == 16)
                             {
-                                GetCode(ref cj, ZRL, j, AC, out v_code, out l_code);
+                                GetCode(ref cj, ZRL, cj.mcuarray.colorTable[j], AC, out v_code, out l_code);
                                 cbw.WriteBit(v_code, l_code);
                                 zero_run = 0;
                             }
                         }
                         else
                         {
-                            v_len = (byte)((zero_run << 4) + GetValueLength(cj.cb.data[j][i][k]));
-                            GetCode(ref cj, v_len, j, AC, out v_code, out l_code);
+                            //v_len = (byte)((zero_run << 4) + GetValueLength(cj.cb.data[j][i][k]));
+                            v_len = (byte)((zero_run << 4) + GetValueLength(cj.mcuarray.MCUs[i].DCTCoef[j][k]));
+                            GetCode(ref cj, v_len, cj.mcuarray.colorTable[j], AC, out v_code, out l_code);
                             cbw.WriteBit(v_code, l_code);
-                            cbw.WriteBit(cj.cb.data[j][i][k], v_len&0x0f);
+                            //cbw.WriteBit(cj.cb.data[j][i][k], v_len & 0x0f);
+                            cbw.WriteBit(cj.mcuarray.MCUs[i].DCTCoef[j][k], v_len & 0x0f);
                             zero_run = 0;
                         }
                     }
                 }
             }
+
+            //ブロック長ループ
+            //for (int i = 0; i < cj.cb.b_len; i++)
+            //{
+            //    //色ループ
+            //    for (int j = 0; j < 3; j++)
+            //    {
+
+            //        EOB_idx = SearchEOBStart(ref cj, j, i);
+            //        //DC
+            //        v_len = GetValueLength(cj.cb.data[j][i][0]);
+            //        GetCode(ref cj, v_len, j, DC, out v_code,out l_code);
+            //        cbw.WriteBit(v_code, l_code);
+            //        cbw.WriteBit(cj.cb.data[j][i][0], v_len);
+
+            //        //AC
+            //        zero_run = 0;
+            //        for (int k = 1; k < 64; k++)
+            //        {
+            //            if (k == EOB_idx)
+            //            {
+            //                GetCode(ref cj, EOB, j, AC, out v_code, out l_code);
+            //                cbw.WriteBit(v_code, l_code);
+
+            //                break;
+            //            }
+
+            //            else if (cj.cb.data[j][i][k] == 0)
+            //            {
+            //                zero_run++;
+            //                if (zero_run == 16)
+            //                {
+            //                    GetCode(ref cj, ZRL, j, AC, out v_code, out l_code);
+            //                    cbw.WriteBit(v_code, l_code);
+            //                    zero_run = 0;
+            //                }
+            //            }
+            //            else
+            //            {
+            //                v_len = (byte)((zero_run << 4) + GetValueLength(cj.cb.data[j][i][k]));
+            //                GetCode(ref cj, v_len, j, AC, out v_code, out l_code);
+            //                cbw.WriteBit(v_code, l_code);
+            //                cbw.WriteBit(cj.cb.data[j][i][k], v_len&0x0f);
+            //                zero_run = 0;
+            //            }
+            //        }
+            //    }
+            //}
             cbw.WriteFinal();
         }
 
@@ -122,18 +166,29 @@ namespace ConsoleApplication1
             }
         }
 
-        static public int SearchEOBStart(ref Cjpeg cj, int color, int b_idx)
+        static public int SearchEOBStart(ref Cjpeg cj, int blockIdx, int MCUidx)
         {
             for (int i = 63; i > -1; i--)
             {
-                if (cj.cb.data[color][b_idx][i] != 0)
+                if (cj.mcuarray.MCUs[MCUidx].DCTCoef[blockIdx][i] != 0)
                 {
-                    return i+1;
+                    return i + 1;
                 }
             }
-
             return 1;
         }
+
+        //static public int SearchEOBStart(ref Cjpeg cj, int color, int b_idx)
+        //{
+        //    for (int i = 63; i > -1; i--)
+        //    {
+        //        if (cj.cb.data[color][b_idx][i] != 0)
+        //        {
+        //            return i+1;
+        //        }
+        //    }
+        //    return 1;
+        //}
 
         /// <summary>
         /// 値長からコードを取得

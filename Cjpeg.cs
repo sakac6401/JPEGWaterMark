@@ -14,13 +14,15 @@ namespace ConsoleApplication1
         public SOF0 sof = null;         //ファイルサイズ情報
         public SOS sos = null;          //
         public CBlock cb = null;
+        public MCUArray mcuarray = null;
 
         public Cjpeg(string path)
         {
             BinaryReader br = new BinaryReader(File.Open(path, FileMode.Open));
             read_file(br);
             //cb = new CBlock(sof.width / 8, sof.height / 8);
-            cb = new CBlock(this.sof);
+            //cb = new CBlock(this.sof);
+            mcuarray = new MCUArray(this.sof);
             br.Close();
         }
 

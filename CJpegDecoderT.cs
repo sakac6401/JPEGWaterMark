@@ -16,23 +16,28 @@ namespace ConsoleApplication1
         
         public static void HuffmanDecode(ref Cjpeg cj)
         {
-            int count = 0;
             int c_value;
             int v_length;
             int z_run;
+            int numColorMCU = 0;
+            int colorSel = 0;
 
-            for (int i = 0; i < (cj.cb.block_width * cj.cb.block_height); i++)
+            for (int i = 0; i < cj.sof.numSample; i++)
             {
-                for (int k = 0; k < 3; k++)
+                numColorMCU += cj.sof.SampleRatioH[i] * cj.sof.SampleRatioV[i];
+            }
+
+            for (int i = 0; i < cj.mcuarray.MCULength; i++)
+            {
+                for (int l = 0; l < cj.mcuarray.numBlock; l++)
                 {
                     //DC
-                    c_value = GetValueLength(ref cj, t_sel[k], DC);
-                    cj.cb.data[k][i][0] = GetValue(ref cj, c_value);
-
+                    c_value = GetValueLength(ref cj, t_sel[cj.mcuarray.colorTable[l]], DC);
+                    cj.mcuarray.MCUs[i].DCTCoef[l][0] = GetValue(ref cj, c_value);
                     //AC
                     for (int j = 1; j < 64; j++)
                     {
-                        c_value = GetValueLength(ref cj, t_sel[k], AC);
+                        c_value = GetValueLength(ref cj, t_sel[cj.mcuarray.colorTable[l]], AC);
 
                         if (c_value == EOB)
                         {
@@ -41,24 +46,52 @@ namespace ConsoleApplication1
                         else
                         {
                             z_run = (c_value & 0xf0) >> 4;
-                            if (z_run != 0)
-                            {
-                                int aaa;
-                            }
+
                             j += z_run;
                             if (j > 63)
                             {
                                 break;
                             }
                             v_length = (c_value & 0x0f);
-                            cj.cb.data[k][i][j] = GetValue(ref cj, v_length);
-                            //Console.Write(cj.cb.data[count][i, j] + ",");
+                            cj.mcuarray.MCUs[i].DCTCoef[l][j] = GetValue(ref cj, v_length);
                         }
                     }
-
-                    //count = ((count + 1) % 3);
                 }
             }
+
+            //for (int i = 0; i < (cj.cb.block_width * cj.cb.block_height); i++)
+            //{
+            //    for (int l = 0; l < numColorMCU; l++)
+            //    {
+            //        int k = 0;
+            //        //DC
+            //        c_value = GetValueLength(ref cj, t_sel[k], DC);
+            //        cj.cb.data[k][i][0] = GetValue(ref cj, c_value);
+
+            //        //AC
+            //        for (int j = 1; j < 64; j++)
+            //        {
+            //            c_value = GetValueLength(ref cj, t_sel[k], AC);
+
+            //            if (c_value == EOB)
+            //            {
+            //                break;
+            //            }
+            //            else
+            //            {
+            //                z_run = (c_value & 0xf0) >> 4;
+
+            //                j += z_run;
+            //                if (j > 63)
+            //                {
+            //                    break;
+            //                }
+            //                v_length = (c_value & 0x0f);
+            //                cj.cb.data[k][i][j] = GetValue(ref cj, v_length);
+            //            }
+            //        }
+            //    }
+            //}
 
             //for (int i = 0; i < (cj.cb.block_width * cj.cb.block_height); i++)
             //{
