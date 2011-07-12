@@ -66,8 +66,6 @@
     <Compile Include="CBitWriter.cs" />
     <Compile Include="CBlock.cs" />
     <Compile Include="Cjpeg.cs" />
-    <Compile Include="CJpegDecoder.cs" />
-    <Compile Include="CJpegEncoder.cs" />
     <Compile Include="DQT.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -89,7 +87,6 @@
     </Compile>
     <Compile Include="SOF0.cs" />
     <Compile Include="SOS.cs" />
-    <Compile Include="WaterMarking.cs" />
     <Compile Include="WaterMarkingT.cs" />
     <Compile Include="CJpegDecoderT.cs" />
     <Compile Include="CJpegEncoderT.cs" />

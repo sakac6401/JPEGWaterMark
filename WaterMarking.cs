@@ -111,11 +111,6 @@ namespace ConsoleApplication1
                     
                     WriteHash(bw_embed, hash_value);
 
-                    if (i == 37)
-                    {
-                        int aaa;
-                    }
-
                     for (int j = offset; j < (embed_bits + offset); j++)
                     {
                         if ((hash_value[array_seek] & (1 << (7 - bit_seek))) != 0)
@@ -214,11 +209,6 @@ namespace ConsoleApplication1
                     {
                         extract_data[j] = 0;
                     }
-                    if (i == 37)
-                    {
-                        int aaa;
-                    }
-
                     for (int j = offset; j < (offset + embed_bits); j++)
                     {
                         extract_data[array_seek] += (byte)(SeparateValue(k,i,j) << (7 - bit_seek));

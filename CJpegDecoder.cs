@@ -20,7 +20,6 @@ namespace ConsoleApplication1
         }
         public void HuffmanDecode()
         {
-            int count = 0;
             int c_value;
             int v_length;
             int z_run;

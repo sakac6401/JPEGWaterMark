@@ -28,20 +28,12 @@ namespace ConsoleApplication1
         }
         static void Main(string[] args)
         {
-            Cjpeg cj = null;
             CBitmap cbmp = null;
-            WaterMarking wm = null;
-            int embed_bits = 8;
-            int offset = 0;
-            int color = 3;
-            
-            string path = @"c:\dst.jpg";
             string passwd = "aaaaa";
             string dst_path;
 
             string dst_files = "";
             Cjpeg cj_raw = null;
-            //CJpegDecoderT.HuffmanDecode(ref cj_raw);
             FileInfo fi = null;
             Cjpeg temp = null;
             int[] err;
@@ -114,83 +106,6 @@ namespace ConsoleApplication1
             }
 
             return;
-
-            while (true)
-            {
-                Console.Write(">");
-                switch (Console.ReadLine())
-                {
-                    case "o":
-                        Console.WriteLine("enter filename");
-                        path = Console.ReadLine();
-                        if (path == "")
-                        {
-                            path = @"h:\lenna512.jpg";
-                            Console.WriteLine("read \"h:\\lenna512.jpg\"");
-                        }
-                        try
-                        {
-                            cj = new Cjpeg(path);
-                            cbmp = new CBitmap(new Bitmap(path));
-                            CJpegDecoderT.HuffmanDecode(ref cj);
-                        }
-                        catch
-                        {
-                            Console.WriteLine("read error");
-                        }
-                        
-                        break;
-
-                    case "w":
-                        Console.WriteLine("enter filename");
-                        dst_path = Console.ReadLine();
-                        if (dst_path == "")
-                        {
-                            dst_path = @"h:\dst.jpg";
-                            Console.WriteLine("write \"h:\\dst.jpg\"");
-                        }
-                        CJpegEncoderT.WriteFile(ref cj, dst_path);
-                        break;
-
-                    case "c":
-                        wm.Extract(embed_bits, offset, color);
-                        break;
-
-                    case "e":
-                        //wm.Embed(10);
-                        WaterMarkingT.Embed(ref cj, "aaaaa",embed_bits, offset, color);
-                        break;
-                        
-                    case "t":
-                        Cjpeg test = new Cjpeg(cj);
-                        cj = test;
-                        break;
-
-                    case "q":
-                        return;
-
-                }
-            }
-
-            
-
-
-
-
-            //cjd.HuffmanDecode();
-            ////wm.Embed(0);
-            //wm.Extract(0);
-            //wm.CheckError(ref cbmp);
-            //cje.WriteFile();
-
-            
-            //Application.EnableVisualStyles();
-            //Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new MainForm(cbmp));
-            
-            
-            
-
         }
     }
 }

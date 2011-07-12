@@ -7,6 +7,9 @@ using System.IO;
 
 namespace ConsoleApplication1
 {
+    /// <summary>
+    /// ハフマンデコーダ
+    /// </summary>
     public class CJpegDecoderT
     {
         const int DC = 0;
@@ -20,7 +23,6 @@ namespace ConsoleApplication1
             int v_length;
             int z_run;
             int numColorMCU = 0;
-            int colorSel = 0;
 
             for (int i = 0; i < cj.sof.numSample; i++)
             {
@@ -58,79 +60,6 @@ namespace ConsoleApplication1
                     }
                 }
             }
-
-            //for (int i = 0; i < (cj.cb.block_width * cj.cb.block_height); i++)
-            //{
-            //    for (int l = 0; l < numColorMCU; l++)
-            //    {
-            //        int k = 0;
-            //        //DC
-            //        c_value = GetValueLength(ref cj, t_sel[k], DC);
-            //        cj.cb.data[k][i][0] = GetValue(ref cj, c_value);
-
-            //        //AC
-            //        for (int j = 1; j < 64; j++)
-            //        {
-            //            c_value = GetValueLength(ref cj, t_sel[k], AC);
-
-            //            if (c_value == EOB)
-            //            {
-            //                break;
-            //            }
-            //            else
-            //            {
-            //                z_run = (c_value & 0xf0) >> 4;
-
-            //                j += z_run;
-            //                if (j > 63)
-            //                {
-            //                    break;
-            //                }
-            //                v_length = (c_value & 0x0f);
-            //                cj.cb.data[k][i][j] = GetValue(ref cj, v_length);
-            //            }
-            //        }
-            //    }
-            //}
-
-            //for (int i = 0; i < (cj.cb.block_width * cj.cb.block_height); i++)
-            //{
-            //    for (int k = 0; k < 3; k++)
-            //    {
-            //        //DC
-            //        c_value = GetValueLength(ref cj, t_sel[k], DC);
-            //        cj.cb.data[k][i][0] = GetValue(ref cj, c_value);
-
-            //        //AC
-            //        for (int j = 1; j < 64;j++)
-            //        {
-            //            c_value = GetValueLength(ref cj, t_sel[k], AC);
-
-            //            if (c_value == EOB)
-            //            {
-            //                break;
-            //            }
-            //            else
-            //            {
-            //                z_run = (c_value & 0xf0) >> 4;
-            //                if (z_run != 0)
-            //                {
-            //                    int aaa;
-            //                }
-            //                j += z_run;
-            //                if (j > 63)
-            //                {
-            //                    break;
-            //                }
-            //                v_length = (c_value & 0x0f);
-            //                cj.cb.data[k][i][j] = GetValue(ref cj, v_length);
-            //                //Console.Write(cj.cb.data[count][i, j] + ",");
-            //            }
-            //        }
-
-            //        //count = ((count + 1) % 3);
-            //    }
-            //}
         }
 
         /// <summary>

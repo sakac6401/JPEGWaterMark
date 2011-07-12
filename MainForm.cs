@@ -11,7 +11,6 @@ namespace ConsoleApplication1
 {
     public partial class MainForm : Form
     {
-        CBitmap cbmp;
         public MainForm(CBitmap src)
         {
             InitializeComponent();
