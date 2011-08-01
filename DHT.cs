@@ -11,7 +11,7 @@ namespace ConsoleApplication1
     /// </summary>
     public class DHT : marker_base
     {
-        public CbinaryTree[,] table;
+        public CbinaryTree[,] table = null;
         byte[] id = new byte[] { 0xff, 0xc4 };
         //public CbinaryTree[,] table = new CbinaryTree[2, 2];
         public DHT()

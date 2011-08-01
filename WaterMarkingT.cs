@@ -15,11 +15,12 @@ namespace ConsoleApplication1
     //・量子化
     public class WaterMarkingT
     {     
+
+        //
         //埋込
         public static void Embed(ref Cjpeg cj, string passwd, int embed_bits, int offset, int color)
         {
             UnDiffDC(ref cj);
-            //UnQuantize();
 
             int[][][] temp = GetCbTemp(ref cj);
             ValueCombing(ref cj, embed_bits, offset, color);

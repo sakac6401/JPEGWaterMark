@@ -87,9 +87,12 @@
     </Compile>
     <Compile Include="SOF0.cs" />
     <Compile Include="SOS.cs" />
-    <Compile Include="WaterMarkingT.cs" />
     <Compile Include="CJpegDecoderT.cs" />
     <Compile Include="CJpegEncoderT.cs" />
+    <Compile Include="WaterMarkingM.cs" />
+    <Compile Include="WaterMarkingT.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">

@@ -11,7 +11,6 @@ namespace ConsoleApplication1
 {
     class Program
     {
-
         static int CountError(int[] src, int num)
         {
             int dst = 0;
@@ -45,6 +44,7 @@ namespace ConsoleApplication1
                     CJpegDecoderT.HuffmanDecode(ref cj_raw);
                     dst_path = args[0];
                     dst_path = dst_path.Replace(".jpg", "_m.jpg");
+                    WaterMarkingM.Embed(ref cj_raw, "aaaaa", 32, 0, 3);
                     CJpegEncoderT.WriteFile(ref cj_raw, dst_path);
                     break;
                 case "r":
@@ -72,9 +72,6 @@ namespace ConsoleApplication1
                             Console.WriteLine(dst_path + " wrote");
 
                             err = WaterMarkingT.Check(ref temp, passwd, bits, 0, 3);
-
-
-
                             dst_files += dst_path + " ";
                         }
                         //Process exec = Process.Start("PSNR.exe", dst_files);

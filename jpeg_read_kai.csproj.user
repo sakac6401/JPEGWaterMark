@@ -12,9 +12,9 @@
     <ProjectView>ProjectFiles</ProjectView>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <StartArguments>"H:\jpg\scene.jpg"</StartArguments>
+    <StartArguments>"H:\jpg\l90444.jpg"</StartArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <StartArguments>"H:\jpg\scene.jpg"</StartArguments>
+    <StartArguments>"H:\jpg\l90444.jpg"</StartArguments>
   </PropertyGroup>
 </Project>
