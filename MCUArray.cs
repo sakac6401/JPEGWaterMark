@@ -19,11 +19,11 @@ namespace ConsoleApplication1
         /// </summary>
         public MCU[] MCUs = null;
         /// <summary>
-        /// MCUの高さ
+        /// 画像縦方向のMCUの個数
         /// </summary>
         public int MCUHeight = 0;
         /// <summary>
-        /// MCUの幅
+        /// 画像横方向のMCUの個数
         /// </summary>
         public int MCUWidth = 0;
         /// <summary>
@@ -45,7 +45,7 @@ namespace ConsoleApplication1
         /// Y成分の垂直方向の数
         /// </summary>
         public int VY = 0;
-
+        
         public int[] sampleRatioH = null;
         public int[] sampleRatioV = null;
 
@@ -63,13 +63,15 @@ namespace ConsoleApplication1
 
         public MCUArray(SOF0 sof)
         {
-            MCULength = (int)Math.Ceiling(((double)sof.width / ((double)sof.SampleRatioH[0] * 8.0))) * 
-                            (int)Math.Ceiling((double)sof.height / ((double)sof.SampleRatioV[0] * 8.0));
+            MCUWidth = (int)Math.Ceiling((double) sof.width / (8 * sof.SampleRatioH[0]));
+            MCUHeight = (int)Math.Ceiling((double)sof.height / (8 * sof.SampleRatioV[0]));
+            MCULength = MCUWidth * MCUHeight;
             MCUs = new MCU[MCULength];
-            MCUWidth = sof.SampleRatioH[0];
-            MCUHeight = sof.SampleRatioV[0];
             sampleRatioH = sof.SampleRatioH;
             sampleRatioV = sof.SampleRatioV;
+            HY = sampleRatioH[0];
+            VY = sampleRatioV[0];
+
 
             //MCU内の色数
             for (int i = 0; i < sof.numSample; i++)

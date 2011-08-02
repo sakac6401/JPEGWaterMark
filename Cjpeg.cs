@@ -33,7 +33,7 @@ namespace ConsoleApplication1
             dht = new DHT(prev.dht);
             sof = new SOF0(prev.sof);
             sos = new SOS(prev.sos);
-            cb = new CBlock(prev.cb);
+            mcuarray = new MCUArray(prev.mcuarray);
         }
 
         public void read_file(BinaryReader br)

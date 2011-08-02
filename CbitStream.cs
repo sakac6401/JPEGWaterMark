@@ -5,12 +5,19 @@ using System.Text;
 
 namespace ConsoleApplication1
 {
+    /// <summary>
+    /// byte型配列をビット単位で扱えるようにする
+    /// </summary>
     public class CbitStream
     {
         public int data_length = 0;
         private int bit_seek;
         private byte[] data;
 
+        /// <summary>
+        /// byte配列をビット単位で扱う時
+        /// </summary>
+        /// <param name="in_data"></param>
         public CbitStream(byte[] in_data)
         {
             data_length = in_data.Length * 8;
@@ -32,6 +39,16 @@ namespace ConsoleApplication1
             }
         }
 
+        /// <summary>
+        /// 長さだけ確保（値格納用）
+        /// </summary>
+        /// <param name="length"></param>
+        public CbitStream(int length)
+        {
+            this.data = new byte[length];
+            data_length = length * 8;
+        }
+
         public CbitStream(CbitStream prev)
         {
             data_length = prev.data_length;
@@ -42,7 +59,7 @@ namespace ConsoleApplication1
         }
 
         /// <summary>
-        /// 1ビットゲロ
+        /// 1ビット吐き出す
         /// </summary>
         /// <returns>seek位置がdata長を越えているときは-1</returns>
         public int GetBit()
@@ -82,9 +99,14 @@ namespace ConsoleApplication1
             return dst;
         }
 
-        public void CatchData(int src)
-        {            
-
+        /// <summary>
+        /// 1ビット受け取る．ビットシークは１進む
+        /// </summary>
+        /// <param name="src">受け取るデータ．1以上は1とみなす．</param>
+        public void CatchBit(int bit)
+        {
+            this.data[(int)Math.Floor((double)bit_seek / 8)] ^= (byte)(Indicate(bit) << (bit_seek % 8));
+            bit_seek++;
         }
 
         public int Value_Length(int src)
@@ -97,9 +119,39 @@ namespace ConsoleApplication1
             }
         }
 
+        /// <summary>
+        /// ビットシークを指定の位置にセットする
+        /// </summary>
+        /// <param name="n">シークのセット位置（ビット単位）</param>
         public void SetSeek(int n)
         {
             this.bit_seek = n;
         }
+
+        /// <summary>
+        /// 1以上なら1，0なら0を返す
+        /// </summary>
+        /// <param name="a"></param>
+        private int Indicate(int a)
+        {
+            if (a > 0)
+            {
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        public static bool operator == (CbitStream cbs1, CbitStream cbs2)
+        {
+            return object.ReferenceEquals(cbs1, cbs2);
+        }
+        public static bool operator !=(CbitStream cbs1, CbitStream cbs2)
+        {
+            return object.ReferenceEquals(cbs1, cbs2);
+        }
+
     }
 }
