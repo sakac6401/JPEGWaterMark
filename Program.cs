@@ -46,6 +46,10 @@ namespace ConsoleApplication1
                     dst_path = dst_path.Replace(".jpg", "_m.jpg");
                     WaterMarkingM.Embed(ref cj_raw, "aaaaa", 32, 0, 3);
                     CJpegEncoderT.WriteFile(ref cj_raw, dst_path);
+
+                    cj_raw = new Cjpeg(dst_path);
+                    CJpegDecoderT.HuffmanDecode(ref cj_raw);
+                    WaterMarkingM.Check(ref cj_raw, "aaaaa", 32, 0, 3);
                     break;
                 case "r":
                     for (int i = 0; i < args.Length; i++)

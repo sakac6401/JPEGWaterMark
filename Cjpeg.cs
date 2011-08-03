@@ -6,7 +6,7 @@ using System.IO;
 
 namespace ConsoleApplication1
 {
-    public class Cjpeg
+    public class Cjpeg : ICloneable
     {
         public DQT dqt = new DQT();     //量子化テーブル
         public DHT dht = new DHT();     //ハフマンテーブル
@@ -20,10 +20,13 @@ namespace ConsoleApplication1
         {
             BinaryReader br = new BinaryReader(File.Open(path, FileMode.Open));
             read_file(br);
-            //cb = new CBlock(sof.width / 8, sof.height / 8);
-            //cb = new CBlock(this.sof);
             mcuarray = new MCUArray(this.sof);
             br.Close();
+        }
+
+        public object Clone()
+        {
+            return MemberwiseClone();
         }
 
         public Cjpeg(Cjpeg prev)

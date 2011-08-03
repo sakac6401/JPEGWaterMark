@@ -105,7 +105,7 @@ namespace ConsoleApplication1
         /// <param name="src">受け取るデータ．1以上は1とみなす．</param>
         public void CatchBit(int bit)
         {
-            this.data[(int)Math.Floor((double)bit_seek / 8)] ^= (byte)(Indicate(bit) << (bit_seek % 8));
+            this.data[(int)Math.Floor((double)bit_seek / 8)] ^= (byte)(Indicate(bit) << (7 - (bit_seek % 8)));
             bit_seek++;
         }
 
