@@ -11,8 +11,8 @@ namespace ConsoleApplication1
     public class CbitStream
     {
         public int data_length = 0;
-        private int bit_seek;
-        private byte[] data;
+        public int bit_seek;
+        public byte[] data;
 
         /// <summary>
         /// byte配列をビット単位で扱う時
@@ -144,14 +144,45 @@ namespace ConsoleApplication1
             }
         }
 
+        public void Initialize()
+        {
+            for (int i = 0; i < data.Length; i++)
+            {
+                this.data[i] = 0;
+            }
+            this.bit_seek = 0;
+            this.data_length = 0;
+        }
+
         public static bool operator == (CbitStream cbs1, CbitStream cbs2)
         {
-            return object.ReferenceEquals(cbs1, cbs2);
+            if (cbs1.data.Length != cbs2.data.Length)
+            {
+                return false;
+            }
+            for (int i = 0; i < cbs1.data.Length; i++)
+            {
+                if (cbs1.data[i] != cbs2.data[i])
+                {
+                    return false;
+                }
+            }
+            return true;
         }
         public static bool operator !=(CbitStream cbs1, CbitStream cbs2)
         {
-            return object.ReferenceEquals(cbs1, cbs2);
+            if (cbs1.data.Length != cbs2.data.Length)
+            {
+                return true;
+            }
+            for (int i = 0; i < cbs1.data.Length; i++)
+            {
+                if (cbs1.data[i] != cbs2.data[i])
+                {
+                    return true;
+                }
+            }
+            return false;
         }
-
     }
 }

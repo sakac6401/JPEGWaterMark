@@ -37,19 +37,57 @@ namespace ConsoleApplication1
             Cjpeg temp = null;
             int[] err;
 
+            Console.WriteLine(
+                args[0] + "\n" +
+                "t:テストモード\n"+
+                "e:埋め込み\n"+
+                "c:チェック\n"+
+                "o:ファイルチェック\n"+
+                "q:終了"
+                );
+
             switch (Console.ReadLine())
             {
                 case "t":
-                    cj_raw = new Cjpeg(args[0]);
+                    try
+                    {
+                        cj_raw = new Cjpeg(args[0]);
+                    }
+                    catch
+                    {
+                        return;
+                    }
                     CJpegDecoderT.HuffmanDecode(ref cj_raw);
                     dst_path = args[0];
                     dst_path = dst_path.Replace(".jpg", "_m.jpg");
-                    WaterMarkingM.Embed(ref cj_raw, "aaaaa", 32, 0, 3);
+                    WaterMarkingM.Embed(ref cj_raw, "aaaaa", 16, 0, 3);
                     CJpegEncoderT.WriteFile(ref cj_raw, dst_path);
 
                     cj_raw = new Cjpeg(dst_path);
                     CJpegDecoderT.HuffmanDecode(ref cj_raw);
-                    WaterMarkingM.Check(ref cj_raw, "aaaaa", 32, 0, 3);
+                    int[,] error = WaterMarkingM.Check(ref cj_raw, "aaaaa", 16, 0, 3);
+                    break;
+
+                case "c":
+                    string path = args[0].Replace(".jpg", "_m.jpg");
+                    cj_raw = new Cjpeg(path);
+                    CJpegDecoderT.HuffmanDecode(ref cj_raw);
+                    error = WaterMarkingM.Check(ref cj_raw, "aaaaa", 16, 0, 3);
+                    break;
+
+                case "o":
+                    cj_raw = new Cjpeg(args[0].Replace(".jpg", "_m.jpg"));
+                    CJpegDecoderT.HuffmanDecode(ref cj_raw);
+                    WaterMarkingM.UnDiffDC(ref cj_raw);
+                    cj_raw.writeMCU(args[0].Replace(".jpg", ".csv"), 4, cj_raw.mcuarray.numBlock, 16);
+                    break;
+
+                case "e":
+                    cj_raw = new Cjpeg(args[0]);
+                    CJpegDecoderT.HuffmanDecode(ref cj_raw);
+                    WaterMarkingM.Embed(ref cj_raw, "aaaaa", 16, 0, 0);
+                    CJpegEncoderT.WriteFile(ref cj_raw, args[0].Replace(".jpg", "_m.jpg"));
+                    Console.WriteLine("wrote " + args[0].Replace(".jpg", "_m.jpg"));
                     break;
                 case "r":
                     for (int i = 0; i < args.Length; i++)
@@ -82,28 +120,32 @@ namespace ConsoleApplication1
                     }
                     break;
 
-                case "c":
-                    int check_count = int.Parse(Console.ReadLine());
-                    BinaryWriter bw_csv = new BinaryWriter(File.Open(args[0]+".csv", FileMode.Create));
-                    for (int i = 0; i < args.Length; i++)
-                    {
-                        int emb = int.Parse(args[i].Substring(args[i].Length - 6, 2));
-                        
-                        cj_raw = new Cjpeg(args[i]);
-                        cbmp = new CBitmap(new Bitmap(args[i]));
-                        CJpegDecoderT.HuffmanDecode(ref cj_raw);
-                        err = WaterMarkingT.Check(ref cj_raw, passwd, emb, 0, 3);
-                        cbmp.CheckError(ref cj_raw, err, check_count);
-                        //string dst_name = args[i] + args[i].Substring(args[i].Length - 6, 2) + ".bmp";
-                        string dst_name = args[i] + ".bmp";
-                        bw_csv.Write("" + i + "," + CountError(err, check_count) + "\n");
-                        cbmp.ToBitmap().Save(dst_name);
-                        Console.WriteLine(args[i] + " checked");
-                    }
-
-                    bw_csv.Close();
-                    Console.ReadLine();
+                case "q":
+                    return;
                     break;
+
+                //case "c":
+                //    int check_count = int.Parse(Console.ReadLine());
+                //    BinaryWriter bw_csv = new BinaryWriter(File.Open(args[0]+".csv", FileMode.Create));
+                //    for (int i = 0; i < args.Length; i++)
+                //    {
+                //        int emb = int.Parse(args[i].Substring(args[i].Length - 6, 2));
+                        
+                //        cj_raw = new Cjpeg(args[i]);
+                //        cbmp = new CBitmap(new Bitmap(args[i]));
+                //        CJpegDecoderT.HuffmanDecode(ref cj_raw);
+                //        err = WaterMarkingT.Check(ref cj_raw, passwd, emb, 0, 3);
+                //        cbmp.CheckError(ref cj_raw, err, check_count);
+                //        //string dst_name = args[i] + args[i].Substring(args[i].Length - 6, 2) + ".bmp";
+                //        string dst_name = args[i] + ".bmp";
+                //        bw_csv.Write("" + i + "," + CountError(err, check_count) + "\n");
+                //        cbmp.ToBitmap().Save(dst_name);
+                //        Console.WriteLine(args[i] + " checked");
+                //    }
+
+                //    bw_csv.Close();
+                //    Console.ReadLine();
+                //    break;
             }
 
             return;

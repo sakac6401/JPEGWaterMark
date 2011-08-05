@@ -18,7 +18,16 @@ namespace ConsoleApplication1
 
         public Cjpeg(string path)
         {
-            BinaryReader br = new BinaryReader(File.Open(path, FileMode.Open));
+            BinaryReader br = null;
+            try
+            {
+                br = new BinaryReader(File.Open(path, FileMode.Open));
+            }
+            catch
+            {
+                Console.WriteLine(path + "doesn't exist");
+                return;
+            }
             read_file(br);
             mcuarray = new MCUArray(this.sof);
             br.Close();
@@ -38,6 +47,8 @@ namespace ConsoleApplication1
             sos = new SOS(prev.sos);
             mcuarray = new MCUArray(prev.mcuarray);
         }
+
+
 
         public void read_file(BinaryReader br)
         {
@@ -75,6 +86,47 @@ namespace ConsoleApplication1
                     }
                 }
             }
+        }
+
+        public void writeMCU(string path, int numMCU, int numBlock, int numDCTCoef)
+        {
+            StreamWriter sw = null;
+            int num = 0;
+
+            try
+            {
+                sw = new StreamWriter(path);
+            }
+            catch
+            {
+                while (true)
+                {
+                    try
+                    {
+                        sw = new StreamWriter(path.Replace(".csv", num.ToString() + ".csv"));
+                        break;
+                    }
+                    catch
+                    {
+                        num++;
+                    }
+                }
+            }
+            string buf = "";
+            for (int j = 0; j < numBlock; j++)
+            {
+                for (int k = 0; k < numDCTCoef; k++)
+                {
+                    buf = "";
+                    for (int i = 0; i < numMCU; i++)
+                    {
+                        buf += this.mcuarray.MCUs[i].DCTCoef[j][k].ToString() + ",";
+                    }
+                    sw.WriteLine(buf);
+                }
+            }
+
+            sw.Close();
         }
     }
 }
