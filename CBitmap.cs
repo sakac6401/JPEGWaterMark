@@ -66,7 +66,7 @@ namespace ConsoleApplication1
                 {
                     if (error[i + (j * cj.cb.block_width)] >= check_count)
                     {
-                        SetPixel(i * 8, j * 8, i * 8 + 8, j * 8 + 8, 0, 0, 0);
+                        SetPixel(i * 32, j * 32, i * 32 + 32, j * 32 + 32, 0, 0, 0);
                     }
                 }
             }

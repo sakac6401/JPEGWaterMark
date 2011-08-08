@@ -66,6 +66,7 @@
     <Compile Include="CBitWriter.cs" />
     <Compile Include="CBlock.cs" />
     <Compile Include="Cjpeg.cs" />
+    <Compile Include="Loging.cs" />
     <Compile Include="DQT.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>

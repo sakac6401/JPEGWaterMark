@@ -65,7 +65,11 @@ namespace ConsoleApplication1
 
                     cj_raw = new Cjpeg(dst_path);
                     CJpegDecoderT.HuffmanDecode(ref cj_raw);
-                    int[,] error = WaterMarkingM.Check(ref cj_raw, "aaaaa", 16, 0, 3);
+                    int[] error = WaterMarkingM.Check(ref cj_raw, "aaaaa", 16, 0, 3);
+                    CBitmap dst = new CBitmap(new Bitmap(args[0]));
+                    dst.CheckError(ref cj_raw, error, 1);
+                    dst.ToBitmap().Save(args[0].Replace(".jpg", ".bmp"));
+
                     break;
 
                 case "c":
