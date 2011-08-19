@@ -58,13 +58,13 @@ namespace ConsoleApplication1
             
         }
 
-        public void CheckError(ref Cjpeg cj, int[] error, int check_count)
+        public void CheckError(ref Cjpeg cj, int[] error)
         {
-            for (int i = 0; i < cj.cb.block_width; i++)
+            for (int i = 0; i < cj.mcuarray.MCUWidth * cj.mcuarray.HY / 4; i++)
             {
-                for (int j = 0; j < cj.cb.block_height; j++)
+                for (int j = 0; j < cj.mcuarray.MCUHeight * cj.mcuarray.VY / 4; j++)
                 {
-                    if (error[i + (j * cj.cb.block_width)] >= check_count)
+                    if (error[i + (j * cj.mcuarray.MCUWidth * cj.mcuarray.HY / 4)] != 0)
                     {
                         SetPixel(i * 32, j * 32, i * 32 + 32, j * 32 + 32, 0, 0, 0);
                     }

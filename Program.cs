@@ -67,7 +67,7 @@ namespace ConsoleApplication1
                     CJpegDecoderT.HuffmanDecode(ref cj_raw);
                     int[] error = WaterMarkingM.Check(ref cj_raw, "aaaaa", 16, 0, 3);
                     CBitmap dst = new CBitmap(new Bitmap(args[0]));
-                    dst.CheckError(ref cj_raw, error, 1);
+                    dst.CheckError(ref cj_raw, error);
                     dst.ToBitmap().Save(args[0].Replace(".jpg", ".bmp"));
 
                     break;
@@ -77,13 +77,21 @@ namespace ConsoleApplication1
                     cj_raw = new Cjpeg(path);
                     CJpegDecoderT.HuffmanDecode(ref cj_raw);
                     error = WaterMarkingM.Check(ref cj_raw, "aaaaa", 16, 0, 3);
+                    cbmp = new CBitmap(new Bitmap(args[0].Replace(".jpg", "_m.jpg")));
+                    cbmp.CheckError(ref cj_raw, error);
+                    cbmp.ToBitmap().Save(args[0].Replace(".jpg", "_m.bmp"));
                     break;
 
                 case "o":
+                    cj_raw = new Cjpeg(args[0]);
+                    CJpegDecoderT.HuffmanDecode(ref cj_raw);
+                    WaterMarkingM.UnDiffDC(ref cj_raw);
+                    cj_raw.writeMCU(args[0].Replace(".jpg", ".csv"), cj_raw.mcuarray.MCULength, cj_raw.mcuarray.numBlock, 16);
+
                     cj_raw = new Cjpeg(args[0].Replace(".jpg", "_m.jpg"));
                     CJpegDecoderT.HuffmanDecode(ref cj_raw);
                     WaterMarkingM.UnDiffDC(ref cj_raw);
-                    cj_raw.writeMCU(args[0].Replace(".jpg", ".csv"), 4, cj_raw.mcuarray.numBlock, 16);
+                    cj_raw.writeMCU(args[0].Replace(".jpg", "_m.csv"), cj_raw.mcuarray.MCULength, cj_raw.mcuarray.numBlock, 16);
                     break;
 
                 case "e":
@@ -92,6 +100,12 @@ namespace ConsoleApplication1
                     WaterMarkingM.Embed(ref cj_raw, "aaaaa", 16, 0, 0);
                     CJpegEncoderT.WriteFile(ref cj_raw, args[0].Replace(".jpg", "_m.jpg"));
                     Console.WriteLine("wrote " + args[0].Replace(".jpg", "_m.jpg"));
+                    break;
+
+                case "i":
+                    cj_raw = new Cjpeg(args[0]);
+                    CJpegDecoderT.HuffmanDecode(ref cj_raw);
+                    WaterMarkingM.Embed(ref cj_raw, "aaaaa", 0, 0, 0);
                     break;
                 case "r":
                     for (int i = 0; i < args.Length; i++)

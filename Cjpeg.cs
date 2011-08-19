@@ -15,6 +15,7 @@ namespace ConsoleApplication1
         public SOS sos = null;          //
         public CBlock cb = null;
         public MCUArray mcuarray = null;
+        
 
         public Cjpeg(string path)
         {
@@ -113,12 +114,15 @@ namespace ConsoleApplication1
                 }
             }
             string buf = "";
-            for (int j = 0; j < numBlock; j++)
+
+
+
+            for (int i = 0; i < mcuarray.MCULength; i++)
             {
-                for (int k = 0; k < numDCTCoef; k++)
+                for (int j = 0; j < mcuarray.numBlock; j++)
                 {
                     buf = "";
-                    for (int i = 0; i < numMCU; i++)
+                    for (int k = 0; k < numDCTCoef; k++)
                     {
                         buf += this.mcuarray.MCUs[i].DCTCoef[j][k].ToString() + ",";
                     }

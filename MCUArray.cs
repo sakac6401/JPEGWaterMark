@@ -31,6 +31,13 @@ namespace ConsoleApplication1
         /// </summary>
         public int numBlock = 0;
 
+
+        const int SUB111x111 = 0;
+        const int SUB211x111 = 1;
+        const int SUB111x211 = 2;
+        const int SUB211x211 = 3;
+        public int SubSamplingPattern = 0;
+
         /// <summary>
         /// MCU中のY成分の個数
         /// </summary>
@@ -71,6 +78,8 @@ namespace ConsoleApplication1
             sampleRatioV = sof.SampleRatioV;
             HY = sampleRatioH[0];
             VY = sampleRatioV[0];
+
+            SubSamplingPattern = CheckSubSamplingPattern();
 
 
             //MCU内の色数
@@ -140,6 +149,39 @@ namespace ConsoleApplication1
             prev.sampleRatioH.CopyTo(this.sampleRatioH, 0);
             this.sampleRatioV = new int[prev.sampleRatioV.Length];
             prev.sampleRatioV.CopyTo(this.sampleRatioV, 0);
+        }
+
+        public int CheckSubSamplingPattern()
+        {
+            if (this.sampleRatioH[0] == 1 && this.sampleRatioH[1] == 1 && this.sampleRatioH[2] == 1)
+            {
+                if (this.sampleRatioV[0] == 1 && this.sampleRatioV[1] == 1 && this.sampleRatioV[2] == 1)
+                {
+                    return SUB111x111;
+                }
+            }
+            if (this.sampleRatioH[0] == 2 && this.sampleRatioH[1] == 1 && this.sampleRatioH[2] == 1)
+            {
+                if (this.sampleRatioV[0] == 1 && this.sampleRatioV[1] == 1 && this.sampleRatioV[2] == 1)
+                {
+                    return SUB211x111;
+                }
+            }
+            if (this.sampleRatioH[0] == 1 && this.sampleRatioH[1] == 1 && this.sampleRatioH[2] == 1)
+            {
+                if (this.sampleRatioV[0] == 2 && this.sampleRatioV[1] == 1 && this.sampleRatioV[2] == 1)
+                {
+                    return SUB111x211;
+                }
+            }
+            if (this.sampleRatioH[0] == 2 && this.sampleRatioH[1] == 1 && this.sampleRatioH[2] == 1)
+            {
+                if (this.sampleRatioV[0] == 2 && this.sampleRatioV[1] == 1 && this.sampleRatioV[2] == 1)
+                {
+                    return SUB211x211;
+                }
+            }
+            return -1;
         }
     }
 }
