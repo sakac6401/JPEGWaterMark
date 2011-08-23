@@ -37,14 +37,16 @@ namespace ConsoleApplication1
         //埋込
         public static void Embed(ref Cjpeg cj, string passwd, int embed_bits, int offset, int color)
         {
-            UnDiffDC(ref cj);
+            //UnDiffDC(ref cj);
+            cj.UnDiffDC();
             Cjpeg temp = (Cjpeg)cj.Clone();
             ValueCombing(ref cj);
 
             //EmbedHash(ref cj, temp, passwd, embed_bits, offset, color);
             EmbedHash(ref cj, ref temp, passwd, embed_bits);
 
-            DiffDC(ref cj);
+            cj.DiffDC();
+            //DiffDC(ref cj);
             //Quantize();
         }
 
@@ -266,7 +268,8 @@ namespace ConsoleApplication1
             SHA256 sha = SHA256.Create();
             int idx = 0;
 
-            UnDiffDC(ref temp);
+            temp.UnDiffDC();
+            //UnDiffDC(ref temp);
 
             //cj.mcuarray.MCUs[0].DCTCoef[0][0] = 1;
             //cj.mcuarray.MCUs[1].DCTCoef[0][0] = 1;
@@ -328,111 +331,111 @@ namespace ConsoleApplication1
             return 0;
         }
 
-        //儀式用関数群
-        //逆差分化
-        public static void UnDiffDC(ref Cjpeg cj)
-        {
-            int color = 0;
-            for (int i = 0; i < cj.mcuarray.MCULength; i++)
-            {
-                for (int j = 0; j < cj.mcuarray.numBlock; j++)
-                {
-                    //最初のMCU
-                    if (i==0)
-                    {
-                        if(j != cj.mcuarray.colorFirstIdx[color])
-                        {
-                            cj.mcuarray.MCUs[i].DCTCoef[j][0] += cj.mcuarray.MCUs[i].DCTCoef[j - 1][0];
-                        }
-                    }
-                    //二個目以降のMCU
-                    else
-                    {
-                        if (j == cj.mcuarray.colorFirstIdx[color])
-                        {
-                            cj.mcuarray.MCUs[i].DCTCoef[j][0] += 
-                                cj.mcuarray.MCUs[i - 1].DCTCoef[cj.mcuarray.colorLastIdx[color]][0];
-                        }
-                        else
-                        {
-                            cj.mcuarray.MCUs[i].DCTCoef[j][0] += cj.mcuarray.MCUs[i].DCTCoef[j - 1][0];
-                        }
-                    }
-                    if (j == cj.mcuarray.colorLastIdx[color])
-                    {
-                        color++;
-                    }
-                }
-                color = 0;
-            }
-        }
+        ////儀式用関数群
+        ////逆差分化
+        ////public static void UnDiffDC(ref Cjpeg cj)
+        ////{
+        ////    int color = 0;
+        ////    for (int i = 0; i < cj.mcuarray.MCULength; i++)
+        ////    {
+        ////        for (int j = 0; j < cj.mcuarray.numBlock; j++)
+        ////        {
+        ////            //最初のMCU
+        ////            if (i==0)
+        ////            {
+        ////                if(j != cj.mcuarray.colorFirstIdx[color])
+        ////                {
+        ////                    cj.mcuarray.MCUs[i].DCTCoef[j][0] += cj.mcuarray.MCUs[i].DCTCoef[j - 1][0];
+        ////                }
+        ////            }
+        ////            //二個目以降のMCU
+        ////            else
+        ////            {
+        ////                if (j == cj.mcuarray.colorFirstIdx[color])
+        ////                {
+        ////                    cj.mcuarray.MCUs[i].DCTCoef[j][0] += 
+        ////                        cj.mcuarray.MCUs[i - 1].DCTCoef[cj.mcuarray.colorLastIdx[color]][0];
+        ////                }
+        ////                else
+        ////                {
+        ////                    cj.mcuarray.MCUs[i].DCTCoef[j][0] += cj.mcuarray.MCUs[i].DCTCoef[j - 1][0];
+        ////                }
+        ////            }
+        ////            if (j == cj.mcuarray.colorLastIdx[color])
+        ////            {
+        ////                color++;
+        ////            }
+        ////        }
+        ////        color = 0;
+        ////    }
+        ////}
 
-        //差分化
-        static void DiffDC(ref Cjpeg cj)
-        {
-            int color = 2;
-            for (int i = cj.mcuarray.MCULength - 1; i >-1; i--)
-            {
-                for (int j = cj.mcuarray.numBlock - 1; j > -1; j--)
-                {
-                    if (i == 0)
-                    {
-                        if (j != cj.mcuarray.colorFirstIdx[color])
-                        {
-                            cj.mcuarray.MCUs[i].DCTCoef[j][0] -= cj.mcuarray.MCUs[i].DCTCoef[j - 1][0];
-                        }
-                    }
-                    else
-                    {
-                        if (j == cj.mcuarray.colorFirstIdx[color])
-                        {
-                            cj.mcuarray.MCUs[i].DCTCoef[j][0] -=
-                                cj.mcuarray.MCUs[i-1].DCTCoef[cj.mcuarray.colorLastIdx[color]][0];
-                        }
-                        else
-                        {
-                            cj.mcuarray.MCUs[i].DCTCoef[j][0] -= cj.mcuarray.MCUs[i].DCTCoef[j - 1][0];
-                        }
-                    }
-                    if (j == cj.mcuarray.colorFirstIdx[color])
-                    {
-                        color--;
-                    }
-                }
-                color = 2;
-            }
-        }
+        ////差分化
+        //static void DiffDC(ref Cjpeg cj)
+        //{
+        //    int color = 2;
+        //    for (int i = cj.mcuarray.MCULength - 1; i >-1; i--)
+        //    {
+        //        for (int j = cj.mcuarray.numBlock - 1; j > -1; j--)
+        //        {
+        //            if (i == 0)
+        //            {
+        //                if (j != cj.mcuarray.colorFirstIdx[color])
+        //                {
+        //                    cj.mcuarray.MCUs[i].DCTCoef[j][0] -= cj.mcuarray.MCUs[i].DCTCoef[j - 1][0];
+        //                }
+        //            }
+        //            else
+        //            {
+        //                if (j == cj.mcuarray.colorFirstIdx[color])
+        //                {
+        //                    cj.mcuarray.MCUs[i].DCTCoef[j][0] -=
+        //                        cj.mcuarray.MCUs[i-1].DCTCoef[cj.mcuarray.colorLastIdx[color]][0];
+        //                }
+        //                else
+        //                {
+        //                    cj.mcuarray.MCUs[i].DCTCoef[j][0] -= cj.mcuarray.MCUs[i].DCTCoef[j - 1][0];
+        //                }
+        //            }
+        //            if (j == cj.mcuarray.colorFirstIdx[color])
+        //            {
+        //                color--;
+        //            }
+        //        }
+        //        color = 2;
+        //    }
+        //}
         
-        //逆量子化
-        static void UnQuantize(ref Cjpeg cj)
-        {
-            for (int i = 0; i < cj.mcuarray.MCULength; i++)
-            {
-                for (int j = 0; j < cj.mcuarray.numBlock; j++)
-                {
-                    for (int k = 0; k < 64; k++)
-                    {
-                        cj.mcuarray.MCUs[i].DCTCoef[j][k] *=
-                            cj.dqt.table[cj.sof.DQTSelecter[cj.mcuarray.colorTable[j]]][k];
-                    }
-                }
-            }
-        }
-        //量子化
-        static void Quantize(ref Cjpeg cj)
-        {
-            for (int i = 0; i < cj.mcuarray.MCULength; i++)
-            {
-                for (int j = 0; j < cj.mcuarray.numBlock; j++)
-                {
-                    for (int k = 0; k < 64; k++)
-                    {
-                        cj.mcuarray.MCUs[i].DCTCoef[j][k] =
-                            (int)Math.Round((double)cj.mcuarray.MCUs[i].DCTCoef[j][k] / (double)cj.dqt.table[cj.sof.DQTSelecter[cj.mcuarray.colorTable[j]]][k]);
-                    }
-                }
-            }
-        }
+        ////逆量子化
+        //static void UnQuantize(ref Cjpeg cj)
+        //{
+        //    for (int i = 0; i < cj.mcuarray.MCULength; i++)
+        //    {
+        //        for (int j = 0; j < cj.mcuarray.numBlock; j++)
+        //        {
+        //            for (int k = 0; k < 64; k++)
+        //            {
+        //                cj.mcuarray.MCUs[i].DCTCoef[j][k] *=
+        //                    cj.dqt.table[cj.sof.DQTSelecter[cj.mcuarray.colorTable[j]]][k];
+        //            }
+        //        }
+        //    }
+        //}
+        ////量子化
+        //static void Quantize(ref Cjpeg cj)
+        //{
+        //    for (int i = 0; i < cj.mcuarray.MCULength; i++)
+        //    {
+        //        for (int j = 0; j < cj.mcuarray.numBlock; j++)
+        //        {
+        //            for (int k = 0; k < 64; k++)
+        //            {
+        //                cj.mcuarray.MCUs[i].DCTCoef[j][k] =
+        //                    (int)Math.Round((double)cj.mcuarray.MCUs[i].DCTCoef[j][k] / (double)cj.dqt.table[cj.sof.DQTSelecter[cj.mcuarray.colorTable[j]]][k]);
+        //            }
+        //        }
+        //    }
+        //}
 
         //平均
         double PutAverage(int[] data)

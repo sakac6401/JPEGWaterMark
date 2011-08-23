@@ -85,12 +85,14 @@ namespace ConsoleApplication1
                 case "o":
                     cj_raw = new Cjpeg(args[0]);
                     CJpegDecoderT.HuffmanDecode(ref cj_raw);
-                    WaterMarkingM.UnDiffDC(ref cj_raw);
+                    //WaterMarkingM.UnDiffDC(ref cj_raw);
+                    cj_raw.UnDiffDC();
                     cj_raw.writeMCU(args[0].Replace(".jpg", ".csv"), cj_raw.mcuarray.MCULength, cj_raw.mcuarray.numBlock, 16);
 
                     cj_raw = new Cjpeg(args[0].Replace(".jpg", "_m.jpg"));
                     CJpegDecoderT.HuffmanDecode(ref cj_raw);
-                    WaterMarkingM.UnDiffDC(ref cj_raw);
+                    cj_raw.UnDiffDC();
+                    //WaterMarkingM.UnDiffDC(ref cj_raw);
                     cj_raw.writeMCU(args[0].Replace(".jpg", "_m.csv"), cj_raw.mcuarray.MCULength, cj_raw.mcuarray.numBlock, 16);
                     break;
 
@@ -106,6 +108,18 @@ namespace ConsoleApplication1
                     cj_raw = new Cjpeg(args[0]);
                     CJpegDecoderT.HuffmanDecode(ref cj_raw);
                     WaterMarkingM.Embed(ref cj_raw, "aaaaa", 0, 0, 0);
+                    break;
+
+                case "dt":
+                    cj_raw = new Cjpeg(args[0]);
+                    CJpegDecoderT.HuffmanDecode(ref cj_raw);
+                    cj_raw.UnDiffDC();
+                    //cj_raw.deQuantize();
+
+                    cj_raw.Quantize();
+                    cj_raw.DiffDC();
+                    CJpegEncoderT.WriteFile(ref cj_raw, args[0].Replace(".jpg", "_d.jpg"));
+
                     break;
                 case "r":
                     for (int i = 0; i < args.Length; i++)

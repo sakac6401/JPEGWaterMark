@@ -12,6 +12,9 @@ namespace ConsoleApplication1
     public class DQT : marker_base
     {
         public int num_color;
+        /// <summary>
+        /// 量子化テーブル[テーブル番号][要素番号]
+        /// </summary>
         public byte[][] table;
         public int t_size;
 
