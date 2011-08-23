@@ -20,5 +20,18 @@ namespace ConsoleApplication1
                 DCTCoef[i] = new int[64];
             }
         }
+
+        public int[][] ToBlock()
+        {
+            int[][] dst = new int[8][];
+            for (int i = 0; i < 8; i++)
+            {
+                dst[i] = new int[8];
+            }
+
+
+
+            return dst;
+        }
     }
 }

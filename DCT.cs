@@ -71,10 +71,16 @@ namespace ConsoleApplication1
             return MultMatrix(MultMatrix(Ct, A), C);
         }
 
-        //public static double[][] DCT2D(ref Cjpeg cj)
-        //{
+        /// <summary>
+        /// Cjpegに対してDCTを行う．
+        /// 逆差分化，逆量子化は事前行っておくこと．
+        /// </summary>
+        /// <param name="cj">対象</param>
+        /// <returns></returns>
+        public static double[][] DCT2D(ref Cjpeg cj)
+        {
 
-        //}
+        }
 
         public static void PrintMatrix(double[][] A)
         {
