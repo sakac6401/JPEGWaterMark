@@ -36,8 +36,6 @@ namespace ConsoleApplication1
                     this.data[2][i][j] = bmp.GetPixel(i, j).B;
                 }
             }
-
-            
         }
 
         public CBitmap(int w, int h)

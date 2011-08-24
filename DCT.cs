@@ -77,10 +77,10 @@ namespace ConsoleApplication1
         /// </summary>
         /// <param name="cj">対象</param>
         /// <returns></returns>
-        public static double[][] DCT2D(ref Cjpeg cj)
-        {
+        //public static double[][] DCT2D(ref Cjpeg cj)
+        //{
 
-        }
+        //}
 
         public static void PrintMatrix(double[][] A)
         {

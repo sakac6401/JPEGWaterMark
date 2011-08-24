@@ -88,7 +88,6 @@ namespace ConsoleApplication1
                     //WaterMarkingM.UnDiffDC(ref cj_raw);
                     cj_raw.UnDiffDC();
                     cj_raw.writeMCU(args[0].Replace(".jpg", ".csv"), cj_raw.mcuarray.MCULength, cj_raw.mcuarray.numBlock, 16);
-
                     cj_raw = new Cjpeg(args[0].Replace(".jpg", "_m.jpg"));
                     CJpegDecoderT.HuffmanDecode(ref cj_raw);
                     cj_raw.UnDiffDC();
@@ -120,6 +119,20 @@ namespace ConsoleApplication1
                     cj_raw.DiffDC();
                     CJpegEncoderT.WriteFile(ref cj_raw, args[0].Replace(".jpg", "_d.jpg"));
 
+                    break;
+
+                case"k":
+                    for (int i = 0; i < Math.Pow(3, 10); i++)
+                    {
+                        DCT.MultMatrix(DCT.MultMatrix(DCT.C, DCT.Ct), DCT.C);
+                        if (i % 1000 == 0)
+                        {
+                            Console.WriteLine(i);
+
+                        }
+                    }
+                    Console.WriteLine("end");
+                    Console.WriteLine(Math.Pow(3, 10));
                     break;
                 case "r":
                     for (int i = 0; i < args.Length; i++)

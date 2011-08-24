@@ -27,11 +27,12 @@ namespace ConsoleApplication1
     {
         const int emb_pix = 16;
         const int key_len = 4096;
-        //埋め込みプロファイル
         /// <summary>
+        /// 埋込プロファイル
         /// [サブサンプリングパターン][Y,Cb,Cr]
         /// </summary>
-        static int[][] EMBED_BITS_PROFILE = new int[][] {new int[]{8,4,4},new int[]{10,6,6},new int[]{10,6,6},new int[]{12,8,8}};
+        static int[][] EMBED_BITS_PROFILE = new int[][] {new int[]{10,0,0},new int[]{10,0,0},new int[]{10,0,0},new int[]{10,0,0}};
+        //{new int[]{8,4,4},new int[]{10,6,6},new int[]{10,6,6},new int[]{12,8,8}};
         
 
         //埋込
@@ -293,11 +294,10 @@ namespace ConsoleApplication1
                     }
                     
                     cbs_calc = new CbitStream(sha.ComputeHash(GetHashKey(ref temp, passwd, 0, i, j)));
-                    if (cbs_extr != cbs_calc)
+                    if (!CheckCbs(cbs_calc, cbs_extr, 80))
                     {
                         err_count++;
                         error[i + j * (cj.mcuarray.MCUWidth * cj.mcuarray.HY / 4)] = 1;
-                        
                     }
                 }
             }
@@ -317,18 +317,26 @@ namespace ConsoleApplication1
             }
         }
 
-        static int CheckHash(byte[] hashA, byte[] hashB, int embed_bits)
+        /// <summary>
+        /// CBS同士の比較
+        /// 同一ならtrue，異なるならfalseを返す
+        /// </summary>
+        /// <param name="A"></param>
+        /// <param name="B"></param>
+        /// <param name="embed_bits"></param>
+        /// <returns></returns>
+        static bool CheckCbs(CbitStream A, CbitStream B, int embed_bits)
         {
 
             for (int i = 0; i < embed_bits; i++)
             {
-                if ( (hashA[(int)(i / 8)] & (byte)(1 << 7 - (i % 8))) !=
-                     (hashB[(int)(i / 8)] & (byte)(1 << 7 - (i % 8))) )
+                if ( (A.data[(int)(i / 8)] & (byte)(1 << 7 - (i % 8))) !=
+                     (B.data[(int)(i / 8)] & (byte)(1 << 7 - (i % 8))) )
                 {
-                    return 1;
+                    return false;
                 }
             }
-            return 0;
+            return true;
         }
 
         ////儀式用関数群
