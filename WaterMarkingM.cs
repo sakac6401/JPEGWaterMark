@@ -35,20 +35,22 @@ namespace ConsoleApplication1
         //{new int[]{8,4,4},new int[]{10,6,6},new int[]{10,6,6},new int[]{12,8,8}};
         
 
-        //埋込
-        public static void Embed(ref Cjpeg cj, string passwd, int embed_bits, int offset, int color)
+        /// <summary>
+        /// フラジャイル電子透かしを埋め込む埋め込み
+        /// </summary>
+        /// <param name="cj">埋め込み対象Cjpegクラス（参照入力）</param>
+        /// <param name="passwd">鍵</param>
+        public static void Embed(ref Cjpeg cj, string passwd)
         {
-            //UnDiffDC(ref cj);
             cj.UnDiffDC();
+
             Cjpeg temp = (Cjpeg)cj.Clone();
+
             ValueCombing(ref cj);
 
-            //EmbedHash(ref cj, temp, passwd, embed_bits, offset, color);
-            EmbedHash(ref cj, ref temp, passwd, embed_bits);
+            EmbedHash(ref cj, ref temp, passwd);
 
             cj.DiffDC();
-            //DiffDC(ref cj);
-            //Quantize();
         }
 
         static void AddRand(ref Cjpeg cj)
@@ -76,7 +78,7 @@ namespace ConsoleApplication1
         /// <summary>
         /// Y成分のDCT係数を間引く
         /// </summary>
-        /// <param name="cj">入力CJpegクラス</param>
+        /// <param name="cj">間引対象CJpegクラス</param>
         /// <param name="embed_bits">埋め込みビット数</param>
         static void ValueCombing(ref Cjpeg cj)
         {
@@ -100,15 +102,12 @@ namespace ConsoleApplication1
         }
 
         /// <summary>
-        /// ハッシュ埋め込み関数
+        /// ハッシュ値を埋め込む
         /// </summary>
-        /// <param name="cj">埋め込み対象CJpegクラス</param>
-        /// <param name="temp"></param>
-        /// <param name="passwd"></param>
-        /// <param name="embed_bits"></param>
-        /// <param name="offset"></param>
-        /// <param name="color"></param>
-        static void EmbedHash(ref Cjpeg cj, ref Cjpeg temp, string passwd, int embed_bits)
+        /// <param name="cj">値を間引いた埋め込み対象CJpegクラス</param>
+        /// <param name="temp">値を間引く前の埋め込み対象Cjpegクラス</param>
+        /// <param name="passwd">鍵</param>
+        static void EmbedHash(ref Cjpeg cj, ref Cjpeg temp, string passwd)
         {
             byte[] hash_key;
             byte[] hash_value;
@@ -256,8 +255,13 @@ namespace ConsoleApplication1
             return dst;
         }
 
-
-        public static int[] Check(ref Cjpeg cj, string passwd, int embed_bits, int offset, int color)
+        /// <summary>
+        /// 改ざんチェック関数
+        /// </summary>
+        /// <param name="cj">チェック対象Cjpegクラス</param>
+        /// <param name="passwd">鍵</param>
+        /// <returns></returns>
+        public static int[] Check(ref Cjpeg cj, string passwd)
         {
             Cjpeg temp = (Cjpeg)cj.Clone();
             int[] error = new int[cj.mcuarray.MCUWidth * cj.mcuarray.HY * cj.mcuarray.MCUHeight * cj.mcuarray.VY / 16];
@@ -270,10 +274,7 @@ namespace ConsoleApplication1
             int idx = 0;
 
             temp.UnDiffDC();
-            //UnDiffDC(ref temp);
 
-            //cj.mcuarray.MCUs[0].DCTCoef[0][0] = 1;
-            //cj.mcuarray.MCUs[1].DCTCoef[0][0] = 1;
             for (int j = 0; j < cj.mcuarray.MCUHeight * cj.mcuarray.VY / 4; j++)
             {
                 for (int i = 0; i < cj.mcuarray.MCUWidth * cj.mcuarray.HY/4; i++)
@@ -305,6 +306,14 @@ namespace ConsoleApplication1
             return error;
         }
 
+        /// <summary>
+        /// DCT係数と埋め込みビットを分離する
+        /// </summary>
+        /// <param name="cj">分離対象Cjpegクラス</param>
+        /// <param name="cbs">分離したビットを格納するCbitStreamクラス</param>
+        /// <param name="embed_bits">埋め込みビット数</param>
+        /// <param name="MCUidx">分離対象MCU番号</param>
+        /// <param name="Yidx"></param>
         public static void DataSeparation(ref Cjpeg cj, ref CbitStream cbs, int embed_bits, int MCUidx, int Yidx)
         {
             int val = 0;

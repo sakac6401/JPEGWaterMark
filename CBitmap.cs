@@ -13,7 +13,6 @@ namespace ConsoleApplication1
         public int width;
         public CBitmap(Bitmap bmp)
         {
-            
             this.height = bmp.Height;
             this.width = bmp.Width;
 
@@ -36,6 +35,8 @@ namespace ConsoleApplication1
                     this.data[2][i][j] = bmp.GetPixel(i, j).B;
                 }
             }
+
+            bmp.Dispose();
         }
 
         public CBitmap(int w, int h)
