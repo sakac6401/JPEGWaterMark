@@ -52,7 +52,7 @@ namespace ConsoleApplication1
 
             while(true){
 
-
+                Console.WriteLine();
                 Console.Write(">");
                 switch (Console.ReadLine())
                 {
@@ -188,6 +188,42 @@ namespace ConsoleApplication1
                         }
                         break;
 
+                    case "z":
+                        cj_raw = new Cjpeg(srcPath);
+                        CJpegDecoderT.HuffmanDecode(ref cj_raw);
+                        cj_raw.UnDiffDC();
+                        cj_raw.deQuantize();
+
+                        double[] Yd = new double[64];
+                        Yd.Initialize();
+                        for (int i = 0; i < 10; i++)
+                        {
+                            Yd[i] = cj_raw.dqt.table[0][i];
+                        }
+                        double[][] Y = DCT.IDCT2D(Zigzag.toArray(cj_raw.mcuarray.MCUs[0].DCTCoef[0]));
+                        double[][] Cb = DCT.IDCT2D(Zigzag.toArray(cj_raw.mcuarray.MCUs[0].DCTCoef[1]));
+                        double[][] Cr = DCT.IDCT2D(Zigzag.toArray(cj_raw.mcuarray.MCUs[0].DCTCoef[2]));
+
+                        double[][] R;
+                        double[][] G;
+                        double[][] B;
+
+                        Console.WriteLine("Yd");
+                        print.Print2DMat(Zigzag.toArray(Yd));
+                        Console.WriteLine("YdRe");
+                        print.Print2DMat(Matrix.Round(DCT.DCT2D(Matrix.Round(DCT.IDCT2D(Zigzag.toArray(Yd))))));
+
+                        //ColorSpace.toRGB(Y, Cb, Cr, out R, out G, out B);
+
+                        //Console.WriteLine("R");
+                        //print.Print2DMat(Matrix.Round(Matrix.Add(R, 128)));
+                        //Console.WriteLine("G");
+                        //print.Print2DMat(Matrix.Round(Matrix.Add(G, 128)));
+                        //Console.WriteLine("B");
+                        //print.Print2DMat(Matrix.Round(Matrix.Add(B, 128)));
+
+                        break;
+
                     case "q":
                         return;
                         //break;
@@ -218,5 +254,7 @@ namespace ConsoleApplication1
             }
 
         }
+
+
     }
 }

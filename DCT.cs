@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Linq.Expressions;
 
 namespace ConsoleApplication1
 {
@@ -37,10 +38,13 @@ namespace ConsoleApplication1
                 new double[]{0.35355,-0.41573,0.19134,0.097545,-0.35355,0.49039,-0.46194,0.27779},
                 new double[]{0.35355,-0.49039,0.46194,-0.41573,0.35355,-0.27779,0.19134,-0.097545}};
 
-        public static double[][] MultMatrix(double[][] A, double[][] B)
+        public static double[][] MultMatrix<Type1,Type2>(Type1[][] A, Type2[][] B)
+            where Type1 : struct
+            where Type2 : struct
         {
             double[][] dst = new double[A.Length][];
             double buf = 0;
+
             for (int i = 0; i < A.Length; i++)
             {
                 dst[i] = new double[A[i].Length];
@@ -53,7 +57,7 @@ namespace ConsoleApplication1
                     buf = 0;
                     for (int k = 0; k < A.Length; k++)
                     {
-                        buf += A[i][k] * B[k][j];
+                        buf += Convert.ToDouble(A[i][k]) * Convert.ToDouble(B[k][j]);
                     }
                     dst[i][j] = buf;
                 }
@@ -61,12 +65,14 @@ namespace ConsoleApplication1
             return dst;
         }
 
-        public static double[][] DCT2D(double[][] A)
+        public static double[][] DCT2D<Type>(Type[][] A)
+            where Type : struct
         {
             return MultMatrix(MultMatrix(C, A), Ct);
         }
 
-        public static double[][] IDCT2D(double[][] A)
+        public static double[][] IDCT2D<Type>(Type[][] A)
+            where Type : struct
         {
             return MultMatrix(MultMatrix(Ct, A), C);
         }
