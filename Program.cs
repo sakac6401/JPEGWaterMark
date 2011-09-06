@@ -40,6 +40,12 @@ namespace ConsoleApplication1
             Cjpeg temp = null;
             int[] err;
 
+            //DefaultTraceListenerオブジェクトを取得
+            DefaultTraceListener drl;
+            drl = (DefaultTraceListener)Trace.Listeners["Default"];
+            //LogFileNameを変更する
+            drl.LogFileName = @"H:\log.txt";
+
             Console.WriteLine(
                 args[0] + "\n" +
                 "t:テストモード\n"+
@@ -189,6 +195,8 @@ namespace ConsoleApplication1
                         break;
 
                     case "z":
+
+
                         cj_raw = new Cjpeg(srcPath);
                         CJpegDecoderT.HuffmanDecode(ref cj_raw);
                         cj_raw.UnDiffDC();
@@ -213,48 +221,76 @@ namespace ConsoleApplication1
                         Console.WriteLine("YdRe");
                         print.Print2DMat(Matrix.Round(DCT.DCT2D(Matrix.Round(DCT.IDCT2D(Zigzag.toArray(Yd))))));
 
-                        //ColorSpace.toRGB(Y, Cb, Cr, out R, out G, out B);
-
-                        //Console.WriteLine("R");
-                        //print.Print2DMat(Matrix.Round(Matrix.Add(R, 128)));
-                        //Console.WriteLine("G");
-                        //print.Print2DMat(Matrix.Round(Matrix.Add(G, 128)));
-                        //Console.WriteLine("B");
-                        //print.Print2DMat(Matrix.Round(Matrix.Add(B, 128)));
-
                         break;
+
+                    case "dy":
+                        StreamWriter sw = new StreamWriter(@"H:\jpg\log.csv");
+                        StreamWriter sw_mat = new StreamWriter(@"H:\jpg\log_mat.txt");
+                        Console.SetOut(sw);
+                        int num_bit = 6;
+
+                        Console.WriteLine("coef,error,parsentage");
+                        int[] d = new int[10];
+                        double[][] buf1;
+                        double[][] buf2;
+                        int not_equal;
+                        for (int j = 2; j < 100; j++)
+                        {
+                            not_equal = 0;
+                            d.Initialize();
+                            for (int i = 0; i < (int)Math.Pow(3, num_bit); i++)
+                            {
+                                buf1 = Matrix.Round(Matrix.Mult(Matrix.MakeMat(d), j));
+                                buf2 = Matrix.Round(DCT.DCT2D(Matrix.Round(DCT.IDCT2D(Matrix.Mult(Matrix.MakeMat(d),j)))));
+                                if (!Matrix.Equal(buf1, buf2))
+                                {
+                                    not_equal++;
+                                    //print.Print2DMat(buf);
+                                }
+                                else if(!Matrix.AllZero(buf1))
+                                {
+                                    Console.SetOut(sw_mat);
+                                    print.Print2DMat(buf1,"mathematica");
+                                    Console.WriteLine();
+                                    Console.SetOut(sw);                                    
+                                }
+
+                                Matrix.ArrayIncrement(ref d, 3);
+                            }
+                            Console.WriteLine(j + "," + not_equal + "," + (double)(not_equal / Math.Pow(3, num_bit)));
+                        }
+
+                        sw.Close();
+                        sw_mat.Close();
+                        Console.OpenStandardOutput();
+
+                        return;
+
+                    case "zikken":
+                        int step = Convert.ToInt32(Console.ReadLine());
+                        cj_raw = new Cjpeg(dstPath);
+                        CJpegDecoderT.HuffmanDecode(ref cj_raw);
+                        cj_raw.UnDiffDC();
+                        cj_raw.deQuantize();
+
+                        //for (int i = 0; i < 1; i++)
+                        //{
+                        //    cj_raw.mcuarray.MCUs[0].DCTCoef[0][i] += step;
+                        //}
+
+                        cj_raw.mcuarray.MCUs[0].DCTCoef[0][3] -= 30;
+                        cj_raw.mcuarray.MCUs[0].DCTCoef[0][5] += 30;
+
+                        CJpegEncoderT.WriteFile(ref cj_raw, dstPath);
+
+                        break;;
 
                     case "q":
                         return;
-                        //break;
                 }
-
-                //case "c":
-                //    int check_count = int.Parse(Console.ReadLine());
-                //    BinaryWriter bw_csv = new BinaryWriter(File.Open(args[0]+".csv", FileMode.Create));
-                //    for (int i = 0; i < args.Length; i++)
-                //    {
-                //        int emb = int.Parse(args[i].Substring(args[i].Length - 6, 2));
-                        
-                //        cj_raw = new Cjpeg(args[i]);
-                //        cbmp = new CBitmap(new Bitmap(args[i]));
-                //        CJpegDecoderT.HuffmanDecode(ref cj_raw);
-                //        err = WaterMarkingT.Check(ref cj_raw, passwd, emb, 0, 3);
-                //        cbmp.CheckError(ref cj_raw, err, check_count);
-                //        //string dst_name = args[i] + args[i].Substring(args[i].Length - 6, 2) + ".bmp";
-                //        string dst_name = args[i] + ".bmp";
-                //        bw_csv.Write("" + i + "," + CountError(err, check_count) + "\n");
-                //        cbmp.ToBitmap().Save(dst_name);
-                //        Console.WriteLine(args[i] + " checked");
-                //    }
-
-                //    bw_csv.Close();
-                //    Console.ReadLine();
-                //    break;
             }
-
         }
 
-
+        
     }
 }
