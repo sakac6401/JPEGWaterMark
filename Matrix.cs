@@ -118,11 +118,11 @@ namespace ConsoleApplication1
         {
             double[][] dst = new double[][]
             {
-                new double[]{TriSign(i[0]), TriSign(i[1]), 0, 0, 0, 0, 0, 0},
-                new double[]{TriSign(i[2]), TriSign(i[3]), TriSign(i[4]), 0, 0, 0, 0, 0},
-                new double[]{0, TriSign(i[5]), 0, 0, 0, 0, 0, 0},
-                new double[]{0, 0, 0, 0, 0, 0, 0, 0},
-                new double[]{0,0,0,0,0,0,0,0},
+                new double[]{TriSign(i[0]), TriSign(i[1]), TriSign(i[2]), TriSign(i[3]), TriSign(i[4]), 0, 0, 0},
+                new double[]{TriSign(i[5]), TriSign(i[6]), TriSign(i[7]), TriSign(i[8]), 0, 0, 0, 0},
+                new double[]{TriSign(i[9]), TriSign(i[10]), TriSign(i[11]), 0, 0, 0, 0, 0},
+                new double[]{TriSign(i[12]), TriSign(i[13]), 0, 0, 0, 0, 0, 0},
+                new double[]{TriSign(i[14]),0,0,0,0,0,0,0},
                 new double[]{0,0,0,0,0,0,0,0},
                 new double[]{0,0,0,0,0,0,0,0},
                 new double[]{0,0,0,0,0,0,0,0}
@@ -200,6 +200,28 @@ namespace ConsoleApplication1
             }
 
             return true;
+        }
+
+        public static double[][] MultComponent<T1, T2>(T1[][] A, T2[][] B)
+            where T1 : struct
+            where T2 : struct
+        {
+            double[][] dst = new double[A.Length][];
+            for (int i = 0; i < A.Length; i++)
+            {
+                dst[i] = new double[A[i].Length];
+                dst.Initialize();
+            }
+
+            for (int i = 0; i < A.Length; i++)
+            {
+                for (int j = 0; j < A[i].Length; j++)
+                {
+                    dst[i][j] = Convert.ToDouble(A[i][j]) * Convert.ToDouble(B[i][j]);
+                }
+            }
+
+            return dst;
         }
 
         public static double[][] Round(double[][] A)
