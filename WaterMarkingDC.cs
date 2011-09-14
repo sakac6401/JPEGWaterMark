@@ -23,91 +23,33 @@ namespace ConsoleApplication1
     /// <summary>
     /// ハッシュ値を埋め込む．画像のサイズは縦横ともに32の倍数であることを仮定
     /// </summary>
-    public class WaterMarkingM
+    public class WaterMarkingDC
     {
         const int emb_pix = 16;
         const int key_len = 4096;
+        const int PROCWIDTH = 4;
+        const int PROCHEIGHT = 4;
+
         /// <summary>
-        /// 埋込プロファイル
-        /// [サブサンプリングパターン][Y,Cb,Cr]
+        /// フラジャイル電子透かしを埋め込む埋め込み
         /// </summary>
-        static int[][] EMBED_BITS_PROFILE = new int[][] {new int[]{10,0,0},new int[]{10,0,0},new int[]{10,0,0},new int[]{10,0,0}};
-        //{new int[]{8,4,4},new int[]{10,6,6},new int[]{10,6,6},new int[]{12,8,8}};
-        
-        
-         ///<summary>
-         ///フラジャイル電子透かしを埋め込む埋め込み
-         ///</summary>
-         ///<param name="cj">埋め込み対象Cjpegクラス（参照入力）</param>
-         ///<param name="passwd">鍵</param>
+        /// <param name="cj">埋め込み対象Cjpegクラス（参照入力）</param>
+        /// <param name="passwd">鍵</param>
         public static void Embed(ref Cjpeg cj, string passwd)
         {
             cj.UnDiffDC();
 
+            cj.deQuantize();
+
             Cjpeg temp = (Cjpeg)cj.Clone();
 
-            ValueCombing(ref cj);
+            //ValueCombing(ref cj);
 
             EmbedHash(ref cj, ref temp, passwd);
 
+            cj.Quantize();
+
             cj.DiffDC();
-        }
-
-        //public static void Embed(ref Cjpeg cj, string pass)
-        //{
-        //    cj.UnDiffDC();
-
-        //    cj.deQuantize();
-
-
-        //}
-
-        static void AddRand(ref Cjpeg cj)
-        {
-            System.Random rand = new System.Random();
-            for (int i = 0; i < cj.mcuarray.MCULength; i++)
-            {
-                for (int j = 0; j < cj.mcuarray.numY; j++)
-                {
-                    for (int k = 0; k < 16; k++)
-                    {
-                        if (rand.Next(2) == 0)
-                        {
-                            cj.mcuarray.MCUs[i].DCTCoef[j][k] += rand.Next(2);
-                        }
-                        else
-                        {
-                            cj.mcuarray.MCUs[i].DCTCoef[j][k] -= rand.Next(2);
-                        }
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Y成分のDCT係数を間引く
-        /// </summary>
-        /// <param name="cj">間引対象CJpegクラス</param>
-        /// <param name="embed_bits">埋め込みビット数</param>
-        static void ValueCombing(ref Cjpeg cj)
-        {
-            for (int i = 0; i < cj.mcuarray.MCULength; i++)
-            {
-                for (int j = 0; j < cj.mcuarray.numBlock; j++)
-                {
-                    for (int k = 0; k < EMBED_BITS_PROFILE[cj.mcuarray.SubSamplingPattern][cj.mcuarray.colorTable[j]]; k++)
-                    {
-                        if ((-1 <= cj.mcuarray.MCUs[i].DCTCoef[j][k]) && (cj.mcuarray.MCUs[i].DCTCoef[j][k] <= 1))
-                        {
-                            cj.mcuarray.MCUs[i].DCTCoef[j][k] = 0;
-                        }
-                        else
-                        {
-                            cj.mcuarray.MCUs[i].DCTCoef[j][k] += (cj.mcuarray.MCUs[i].DCTCoef[j][k] % 2);
-                        }
-                    }
-                }
-            }
         }
 
         /// <summary>
@@ -122,7 +64,7 @@ namespace ConsoleApplication1
             byte[] hash_value;
             SHA256 sha = SHA256.Create();
             CbitStream embed_data = null;
-            Random rand = new Random(1000);
+            Random rand = new Random(DateTime.Now.Millisecond);
             int idx=0;
 
             for (int j = 0; j < cj.mcuarray.MCUHeight * cj.mcuarray.VY / 4; j++)
@@ -140,13 +82,10 @@ namespace ConsoleApplication1
                         {
                             for (int l = 0; l < cj.mcuarray.numBlock; l++)
                             {
-                                for (int k = 0; k < EMBED_BITS_PROFILE[cj.mcuarray.SubSamplingPattern][cj.mcuarray.colorTable[l]]; k++)
+                                if (embed_data.GetBit() != 0)
                                 {
-                                    if (embed_data.GetBit() != 0)
-                                    {
-                                        idx = (i * 4 / cj.mcuarray.HY) + x + (y * cj.mcuarray.MCUWidth) + (j * 4 * cj.mcuarray.MCUWidth / cj.mcuarray.VY);
-                                        SetValue(ref cj, ref temp, idx, l, k, rand);
-                                    }
+                                    idx = (i * 4 / cj.mcuarray.HY) + x + (y * cj.mcuarray.MCUWidth) + (j * 4 * cj.mcuarray.MCUWidth / cj.mcuarray.VY);
+                                    SetValue(ref cj, ref temp, idx, l, 0, rand);
                                 }
                             }
                         }
@@ -327,12 +266,12 @@ namespace ConsoleApplication1
         {
             int val = 0;
 
-            for (int k = 0; k < EMBED_BITS_PROFILE[cj.mcuarray.SubSamplingPattern][cj.mcuarray.colorTable[Yidx]]; k++)
-            {
-                val = Math.Abs(cj.mcuarray.MCUs[MCUidx].DCTCoef[Yidx][k] % 2);
-                cbs.CatchBit(val);
-                cj.mcuarray.MCUs[MCUidx].DCTCoef[Yidx][k] -= (cj.mcuarray.MCUs[MCUidx].DCTCoef[Yidx][k] % 2);
-            }
+            //for (int k = 0; k < EMBED_BITS_PROFILE[cj.mcuarray.SubSamplingPattern][cj.mcuarray.colorTable[Yidx]]; k++)
+            //{
+            //    val = Math.Abs(cj.mcuarray.MCUs[MCUidx].DCTCoef[Yidx][k] % 2);
+            //    cbs.CatchBit(val);
+            //    cj.mcuarray.MCUs[MCUidx].DCTCoef[Yidx][k] -= (cj.mcuarray.MCUs[MCUidx].DCTCoef[Yidx][k] % 2);
+            //}
         }
 
         /// <summary>

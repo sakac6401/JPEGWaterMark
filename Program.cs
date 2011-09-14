@@ -225,6 +225,64 @@ namespace ConsoleApplication1
 
                         break;
 
+                    case "te":
+                        Random rand = new Random(DateTime.Now.Millisecond);
+                        int[] dd = new int[3];
+                        dd.Initialize();
+                        int emby = Convert.ToInt32(Console.ReadLine());
+                        int embb = Convert.ToInt32(Console.ReadLine());
+                        int embr = Convert.ToInt32(Console.ReadLine());
+
+                        cj_raw = new Cjpeg(srcPath);
+                        CJpegDecoderT.HuffmanDecode(ref cj_raw);
+                        cj_raw.mcuarray.MCUs[0].DCTCoef[0][0] = emby;
+                        cj_raw.mcuarray.MCUs[0].DCTCoef[1][0] = embb;
+                        cj_raw.mcuarray.MCUs[0].DCTCoef[2][0] = embr;
+
+                        for (int i = 1; i < 64; i++)
+                        {
+                            cj_raw.mcuarray.MCUs[0].DCTCoef[0][i] = rand.Next(-32, 32);
+                            cj_raw.mcuarray.MCUs[0].DCTCoef[1][i] = rand.Next(-32, 32);
+                            cj_raw.mcuarray.MCUs[0].DCTCoef[2][i] = rand.Next(-32, 32);
+                        }
+
+                        CJpegEncoderT.WriteFile(ref cj_raw, dstPath);
+
+                        break;
+
+                    case "tr":
+                        
+                        //cj_raw = new Cjpeg(srcPath);
+                        //CJpegDecoderT.HuffmanDecode(ref cj_raw);
+
+                        //print.Print2DMat(Zigzag.toArray(cj_raw.mcuarray.MCUs[0].DCTCoef[0]));
+                        //Console.WriteLine();
+                        //print.Print2DMat(Zigzag.toArray(cj_raw.mcuarray.MCUs[0].DCTCoef[1]));
+                        //Console.WriteLine();
+                        //print.Print2DMat(Zigzag.toArray(cj_raw.mcuarray.MCUs[0].DCTCoef[2]));
+                        //Console.WriteLine();
+
+                        cj_raw = new Cjpeg(dstPath);
+                        CJpegDecoderT.HuffmanDecode(ref cj_raw);
+
+                        Console.Write(cj_raw.mcuarray.MCUs[0].DCTCoef[0][0] + ",");
+                        Console.Write(cj_raw.mcuarray.MCUs[0].DCTCoef[1][0] + ",");
+                        Console.WriteLine(cj_raw.mcuarray.MCUs[0].DCTCoef[2][0] + ",");
+
+                        //print.Print2DMat(Zigzag.toArray(cj_raw.mcuarray.MCUs[0].DCTCoef[0]));
+                        //Console.WriteLine();
+                        //print.Print2DMat(Zigzag.toArray(cj_raw.mcuarray.MCUs[0].DCTCoef[1]));
+                        //Console.WriteLine();
+                        //print.Print2DMat(Zigzag.toArray(cj_raw.mcuarray.MCUs[0].DCTCoef[2]));
+                        //Console.WriteLine();
+
+                        break;
+
+                    case "dqt":
+                        cj_raw = new Cjpeg(srcPath);
+                        print.Print2DMat(Zigzag.toArray(cj_raw.dqt.table[0]));
+                        break;
+
                     case "dy":
                         
                         StreamWriter sw = new StreamWriter(@"H:\jpg\log.csv");
@@ -235,19 +293,15 @@ namespace ConsoleApplication1
 
                         Console.WriteLine("coef,error,parsentage");
 
-                        for (int i = 50; i < 101; i++)
+                        for (int i = 1; i < (1<<11) ; i = i<<1)
                         {
-                            string openFile = args[0].Replace(".jpg", "Q" + i.ToString() + ".jpg");
-                            cj_raw = new Cjpeg(openFile);
-                            byte[][] dqt = Zigzag.toArray(cj_raw.dqt.table[0]);
-
+                            double[][] mkMat = Matrix.MakeMat(i);
                             int not_equal = 0;
-                            d.Initialize();
-                            for (int j = 0; j < (int)Math.Pow(3, num_bit); j++)
+                            for (int j = 1; j < 101; j++)
                             {
-                                double[][] mkMat = Matrix.MakeMat(d);
-                                double[][] buf1 = Matrix.Round(Matrix.MultComponent(mkMat, dqt));
-                                double[][] buf2 = Matrix.Round(DCT.DCT2D(Matrix.Round(DCT.IDCT2D(Matrix.MultComponent(mkMat, dqt)))));
+                                double[][] buf1 = Matrix.Round(Matrix.Mult(mkMat, j));
+                                double[][] buf2 = Matrix.Round(DCT.DCT2D(Matrix.Round(DCT.IDCT2D(Matrix.Mult(mkMat, j)))));
+
                                 if (Matrix.Equal(buf1, buf2))
                                 {
                                     if (!Matrix.AllZero(buf1))
@@ -262,36 +316,46 @@ namespace ConsoleApplication1
                                 {
                                     not_equal++;
                                 }
-
-                                Matrix.ArrayIncrement(ref d, 3);
                             }
-                            Console.WriteLine(i + "," + not_equal + "," + (double)(not_equal / Math.Pow(3, num_bit)));
+
+                            Console.WriteLine(i + "," + not_equal + "," + (double)(not_equal / Math.Pow(2, num_bit)));
+
                         }
-                        
-                        
-                        //for (int j = 2; j < 100; j++)
+
+                    
+
+                        //for (int i = 50; i < 101; i++)
                         //{
-                        //    not_equal = 0;
+                        //    string openFile = args[0].Replace(".jpg", "Q" + i.ToString() + ".jpg");
+                        //    cj_raw = new Cjpeg(openFile);
+                        //    byte[][] dqt = Zigzag.toArray(cj_raw.dqt.table[0]);
+
+                        //    int not_equal = 0;
                         //    d.Initialize();
-                        //    for (int i = 0; i < (int)Math.Pow(3, num_bit); i++)
+                        //    for (int j = 0; j < (int)Math.Pow(2, num_bit); j++)
                         //    {
-                        //        buf1 = Matrix.Round(Matrix.Mult(Matrix.MakeMat(d), j));
-                        //        buf2 = Matrix.Round(DCT.DCT2D(Matrix.Round(DCT.IDCT2D(Matrix.Mult(Matrix.MakeMat(d),j)))));
-                        //        if (!Matrix.Equal(buf1, buf2))
+                        //        double[][] mkMat = Matrix.MakeMat(d);
+                        //        double[][] buf1 = Matrix.Round(Matrix.MultComponent(mkMat, dqt));
+                        //        double[][] buf2 = Matrix.Round(DCT.DCT2D(Matrix.Round(DCT.IDCT2D(Matrix.MultComponent(mkMat, dqt)))));
+                        //        if (Matrix.Equal(buf1, buf2))
+                        //        {
+                        //            if (!Matrix.AllZero(buf1))
+                        //            {
+                        //                Console.SetOut(sw_mat);
+                        //                print.Print2DMat(buf1, "mathematica");
+                        //                Console.WriteLine();
+                        //                Console.SetOut(sw);
+                        //            }
+                        //        }
+                        //        else
                         //        {
                         //            not_equal++;
                         //        }
-                        //        else if(!Matrix.AllZero(buf1))
-                        //        {
-                        //            Console.SetOut(sw_mat);
-                        //            print.Print2DMat(buf1,"mathematica");
-                        //            Console.WriteLine();
-                        //            Console.SetOut(sw);                                    
-                        //        }
-
-                        //        Matrix.ArrayIncrement(ref d, 3);
+                        //        Matrix.ArrayIncrement(ref d, 2);
                         //    }
-                        //    Console.WriteLine(j + "," + not_equal + "," + (double)(not_equal / Math.Pow(3, num_bit)));
+                        //    Console.SetOut(Console.Out);
+
+                        //    Console.WriteLine(i + "," + not_equal + "," + (double)(not_equal / Math.Pow(2, num_bit)));
                         //}
 
                         sw.Close();

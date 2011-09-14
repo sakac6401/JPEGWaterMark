@@ -71,21 +71,21 @@ namespace ConsoleApplication1
 
         public void WriteFinal()
         {
-            if (len_now > 0)
-            {
-                for (; len_now < 7; len_now++)
-                {
-                    buf = (byte)(buf << 1);
-                    buf += 1;
-                }
-                buf = (byte)(buf << (7 - len_now));
-                bw.Write((byte)buf);
-            }
-            //if (len_now != 0)
+            //if (len_now > 0)
             //{
-            //    //WriteBit(((1 << (8 - len_now)) - 1), (8 - len_now));
-            //    WriteBit(0, (8 - len_now));
+            //    for (; len_now < 7; len_now++)
+            //    {
+            //        buf = (byte)(buf << 1);
+            //        buf += 1;
+            //    }
+            //    buf = (byte)(buf << (7 - len_now));
+            //    bw.Write((byte)buf);
             //}
+            if (len_now != 0)
+            {
+                //WriteBit(((1 << (8 - len_now)) - 1), (8 - len_now));
+                WriteBit((1 << (8 - len_now))-1, (8 - len_now));
+            }
         }
     }
 }

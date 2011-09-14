@@ -100,11 +100,13 @@
     <Compile Include="SOS.cs" />
     <Compile Include="CJpegDecoderT.cs" />
     <Compile Include="CJpegEncoderT.cs" />
+    <Compile Include="WaterMarkDC.cs" />
     <Compile Include="WaterMarkingM.cs" />
     <Compile Include="WaterMarkingT.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Zigzag.cs" />
+    <Compile Include="WaterMarkingDC.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">

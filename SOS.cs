@@ -33,7 +33,7 @@ namespace ConsoleApplication1
                 }
                 //br_in.ReadBytes(this.head_length - 2);
                 br_in.ReadBytes(3);
-                cbs = new CbitStream(br_in.ReadBytes((int)(br_in.BaseStream.Length - br_in.BaseStream.Position - 2)));
+                cbs = new CbitStream(br_in.ReadBytes((int)(br_in.BaseStream.Length - br_in.BaseStream.Position - 1)));
             }
             catch
             {

@@ -118,11 +118,28 @@ namespace ConsoleApplication1
         {
             double[][] dst = new double[][]
             {
-                new double[]{TriSign(i[0]), TriSign(i[1]), TriSign(i[2]), TriSign(i[3]), TriSign(i[4]), 0, 0, 0},
-                new double[]{TriSign(i[5]), TriSign(i[6]), TriSign(i[7]), TriSign(i[8]), 0, 0, 0, 0},
-                new double[]{TriSign(i[9]), TriSign(i[10]), TriSign(i[11]), 0, 0, 0, 0, 0},
-                new double[]{TriSign(i[12]), TriSign(i[13]), 0, 0, 0, 0, 0, 0},
-                new double[]{TriSign(i[14]),0,0,0,0,0,0,0},
+                new double[]{Sign2(i[0]),Sign2(i[1]),Sign2(i[2]),Sign2(i[3]),Sign2(i[4]),Sign2(i[5]),Sign2(i[6]),Sign2(i[7])},
+                new double[]{Sign2(i[8]),Sign2(i[9]),Sign2(i[10]),Sign2(i[3]),Sign2(i[4]),Sign2(i[5]),Sign2(i[6]),Sign2(i[7])},
+                new double[]{Sign2(i[16]),Sign2(i[17]),Sign2(i[18]),Sign2(i[3]),Sign2(i[4]),Sign2(i[5]),Sign2(i[6]),Sign2(i[7])},
+                new double[]{Sign2(i[24]),Sign2(i[25]),Sign2(i[26]),Sign2(i[3]),Sign2(i[4]),Sign2(i[5]),Sign2(i[6]),Sign2(i[7])},
+                new double[]{Sign2(i[32]),Sign2(i[33]),Sign2(i[34]),Sign2(i[3]),Sign2(i[4]),Sign2(i[5]),Sign2(i[6]),Sign2(i[7])},
+                new double[]{Sign2(i[40]),Sign2(i[41]),Sign2(i[42]),Sign2(i[3]),Sign2(i[4]),Sign2(i[5]),Sign2(i[6]),Sign2(i[7])},
+                new double[]{Sign2(i[48]),Sign2(i[49]),Sign2(i[50]),Sign2(i[3]),Sign2(i[4]),Sign2(i[5]),Sign2(i[6]),Sign2(i[7])},
+                new double[]{Sign2(i[56]),Sign2(i[57]),Sign2(i[58]),Sign2(i[59]),Sign2(i[60]),Sign2(i[61]),Sign2(i[62]),Sign2(i[63])},
+            };
+
+            return dst;
+        }
+
+        public static double[][] MakeMat(Int64 i)
+        {
+            double[][] dst = new double[][]
+            {
+                new double[]{Sign2(i&(1<<0)), Sign2(i&(1<<1)), Sign2(i&(1<<2)), Sign2(i&(1<<3)), 0, 0, 0, 0 },
+                new double[]{Sign2(i&(1<<4)), Sign2(i&(1<<5)), Sign2(i&(1<<6)), 0, 0, 0, 0, 0},
+                new double[]{Sign2(i&(1<<7)), Sign2(i&(1<<8)), 0, 0, 0, 0, 0, 0},
+                new double[]{Sign2(i&(1<<9)), 0, 0, 0, 0, 0, 0, 0},
+                new double[]{0,0,0,0,0,0,0,0},
                 new double[]{0,0,0,0,0,0,0,0},
                 new double[]{0,0,0,0,0,0,0,0},
                 new double[]{0,0,0,0,0,0,0,0}
@@ -131,7 +148,16 @@ namespace ConsoleApplication1
             return dst;
         }
 
-        public static int Sign(int N)
+        public static int Sign(Int64 N)
+        {
+            if (N != 0)
+            {
+                return 1;
+            }
+            return -1;
+        }
+
+        public static int Sign2(Int64 N)
         {
             if (N != 0)
             {
