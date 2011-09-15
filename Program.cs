@@ -89,12 +89,16 @@ namespace ConsoleApplication1
                         break;
 
                     case "c":
-                        cj_raw = new Cjpeg(dstPath);
-                        CJpegDecoderT.HuffmanDecode(ref cj_raw);
-                        error = WaterMarkingM.Check(ref cj_raw, "aaaaa");
-                        cbmp = new CBitmap(new Bitmap(dstPath));
-                        cbmp.CheckError(ref cj_raw, error);
-                        cbmp.ToBitmap().Save(dstPath.Replace(".jpg",".bmp"));
+                        for (int i = 0; i < args.Length; i++)
+                        {
+                            dstPath = args[i].Replace(".jpg", "_m.jpg");
+                            cj_raw = new Cjpeg(dstPath);
+                            CJpegDecoderT.HuffmanDecode(ref cj_raw);
+                            error = WaterMarkingDC.Check(ref cj_raw, "aaaaa");
+                            cbmp = new CBitmap(new Bitmap(dstPath));
+                            cbmp.CheckError(ref cj_raw, error);
+                            cbmp.ToBitmap().Save(dstPath.Replace(".jpg", ".bmp"));
+                        }
                         break;
 
                     case "o":
@@ -127,11 +131,31 @@ namespace ConsoleApplication1
                         break;
 
                     case "e":
+                        for (int i = 0; i < args.Length; i++)
+                        {
+                            cj_raw = new Cjpeg(args[i]);
+                            CJpegDecoderT.HuffmanDecode(ref cj_raw);
+                            WaterMarkingDC.Embed(ref cj_raw, "aaaaa");
+                            dstPath = args[i].Replace(".jpg", "_m.jpg");
+                            CJpegEncoderT.WriteFile(ref cj_raw, dstPath);
+                            Console.WriteLine("wrote " + dstPath);
+                        }
+                        break;
+                        
+                    case "f":
                         cj_raw = new Cjpeg(srcPath);
                         CJpegDecoderT.HuffmanDecode(ref cj_raw);
-                        WaterMarkingM.Embed(ref cj_raw, "aaaaa");
+                        for (int i = 0; i < cj_raw.mcuarray.MCULength; i++)
+                        {
+                            for (int j = 0; j < cj_raw.mcuarray.MCUs[i].DCTCoef.Length; j++)
+                            {
+                                for (int k = 32; k < 64; k++)
+                                {
+                                    cj_raw.mcuarray.MCUs[i].DCTCoef[j][k] = 0;
+                                }
+                            }
+                        }
                         CJpegEncoderT.WriteFile(ref cj_raw, dstPath);
-                        Console.WriteLine("wrote " + dstPath);
                         break;
 
                     case "i":
@@ -265,16 +289,25 @@ namespace ConsoleApplication1
                         cj_raw = new Cjpeg(dstPath);
                         CJpegDecoderT.HuffmanDecode(ref cj_raw);
 
-                        Console.Write(cj_raw.mcuarray.MCUs[0].DCTCoef[0][0] + ",");
-                        Console.Write(cj_raw.mcuarray.MCUs[0].DCTCoef[1][0] + ",");
-                        Console.WriteLine(cj_raw.mcuarray.MCUs[0].DCTCoef[2][0] + ",");
+                        cj_raw.UnDiffDC();
+                        cj_raw.deQuantize();
 
-                        //print.Print2DMat(Zigzag.toArray(cj_raw.mcuarray.MCUs[0].DCTCoef[0]));
-                        //Console.WriteLine();
-                        //print.Print2DMat(Zigzag.toArray(cj_raw.mcuarray.MCUs[0].DCTCoef[1]));
-                        //Console.WriteLine();
-                        //print.Print2DMat(Zigzag.toArray(cj_raw.mcuarray.MCUs[0].DCTCoef[2]));
-                        //Console.WriteLine();
+                        for (int i = 0; i < 16; i++)
+                        {
+                            Console.Write(cj_raw.mcuarray.MCUs[i].DCTCoef[0][0] + ",");
+                            Console.Write(cj_raw.mcuarray.MCUs[i].DCTCoef[1][0] + ",");
+                            Console.WriteLine(cj_raw.mcuarray.MCUs[i].DCTCoef[2][0] + ",");
+                        }
+
+                        for (int i = 0; i < 16; i++)
+                        {
+                            //print.Print2DMat(Zigzag.toArray(cj_raw.mcuarray.MCUs[i].DCTCoef[0]));
+                            //Console.WriteLine();
+                            //print.Print2DMat(Zigzag.toArray(cj_raw.mcuarray.MCUs[i].DCTCoef[1]));
+                            //Console.WriteLine();
+                            //print.Print2DMat(Zigzag.toArray(cj_raw.mcuarray.MCUs[i].DCTCoef[2]));
+                            //Console.WriteLine();
+                        }
 
                         break;
 

@@ -133,7 +133,7 @@ namespace ConsoleApplication1
                     hash_value = sha.ComputeHash(hash_key);
                     
                     embed_data = new CbitStream(hash_value);
-
+                    print.PrintArray(embed_data.data);
                     for (int y = 0; y < 4 / cj.mcuarray.VY; y++)
                     {
                         for (int x = 0; x < 4 / cj.mcuarray.HY; x++)

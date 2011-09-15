@@ -20,12 +20,16 @@ namespace ConsoleApplication1
     //ハッシュ生成
     //ハッシュ埋め込み
 
+    //Caution! 0915
+    //GetHashKey書き換えた
+    //Caution!
+
     /// <summary>
     /// ハッシュ値を埋め込む．画像のサイズは縦横ともに32の倍数であることを仮定
     /// </summary>
     public class WaterMarkingDC
     {
-        const int emb_pix = 16;
+        const int emb_pix = 1;
         const int key_len = 4096;
         const int PROCWIDTH = 4;
         const int PROCHEIGHT = 4;
@@ -39,18 +43,42 @@ namespace ConsoleApplication1
         {
             cj.UnDiffDC();
 
-            cj.deQuantize();
+            //cj.deQuantize();
 
             Cjpeg temp = (Cjpeg)cj.Clone();
 
-            //ValueCombing(ref cj);
+            ValueCombing(ref cj);
 
             EmbedHash(ref cj, ref temp, passwd);
 
-            cj.Quantize();
+            //cj.Quantize();
 
             cj.DiffDC();
         }
+
+        /// <summary>
+        /// Y成分のDCT係数を間引く
+        /// </summary>
+        /// <param name="cj">間引対象CJpegクラス</param>
+        /// <param name="embed_bits">埋め込みビット数</param>
+        static void ValueCombing(ref Cjpeg cj)
+        {
+            for (int i = 0; i < cj.mcuarray.MCULength; i++)
+            {
+                for (int j = 0; j < cj.mcuarray.numBlock; j++)
+                {
+                    if ((-1 <= cj.mcuarray.MCUs[i].DCTCoef[j][0]) && (cj.mcuarray.MCUs[i].DCTCoef[j][0] <= 1))
+                    {
+                        cj.mcuarray.MCUs[i].DCTCoef[j][0] = 0;
+                    }
+                    else
+                    {
+                        cj.mcuarray.MCUs[i].DCTCoef[j][0] += (cj.mcuarray.MCUs[i].DCTCoef[j][0] % 2);
+                    }
+                }
+            }
+        }
+
 
         /// <summary>
         /// ハッシュ値を埋め込む
@@ -67,9 +95,9 @@ namespace ConsoleApplication1
             Random rand = new Random(DateTime.Now.Millisecond);
             int idx=0;
 
-            for (int j = 0; j < cj.mcuarray.MCUHeight * cj.mcuarray.VY / 4; j++)
+            for (int j = 0; j < cj.mcuarray.MCUHeight * cj.mcuarray.VY / PROCHEIGHT; j++)
             {
-                for (int i = 0; i < cj.mcuarray.MCUWidth * cj.mcuarray.HY / 4; i++)
+                for (int i = 0; i < cj.mcuarray.MCUWidth * cj.mcuarray.HY / PROCWIDTH; i++)
                 {
                     hash_key = GetHashKey(ref cj, passwd, 0, i, j);
                     hash_value = sha.ComputeHash(hash_key);
@@ -105,6 +133,15 @@ namespace ConsoleApplication1
         /// <param name="rand">乱数</param>
         static void SetValue(ref Cjpeg cj, ref Cjpeg temp, int MCUidx, int Yidx, int DCTidx, Random rand)
         {
+            int depth = 1;
+            //if (Yidx == 0)
+            //{
+            //    depth = cj.dqt.table[0][0];
+            //}
+            //else
+            //{
+            //    depth = cj.dqt.table[1][0];
+            //}
             //埋め込み対象のDCT係数が0の時
             if(cj.mcuarray.MCUs[MCUidx].DCTCoef[Yidx][DCTidx] == 0)
             {
@@ -116,25 +153,25 @@ namespace ConsoleApplication1
                 }
                 else
                 {
-                    if (rand.Next(2) % 2 == 0)
+                    if (rand.Next(0,2) % 2 == 0)
                     {
-                        cj.mcuarray.MCUs[MCUidx].DCTCoef[Yidx][DCTidx] += 1;
+                        cj.mcuarray.MCUs[MCUidx].DCTCoef[Yidx][DCTidx] += depth;
                     }
                     else
                     {
-                        cj.mcuarray.MCUs[MCUidx].DCTCoef[Yidx][DCTidx] -= 1;
+                        cj.mcuarray.MCUs[MCUidx].DCTCoef[Yidx][DCTidx] -= depth;
                     }
                 }
                 return;
             }
             if (cj.mcuarray.MCUs[MCUidx].DCTCoef[Yidx][DCTidx] < -1)
             {
-                cj.mcuarray.MCUs[MCUidx].DCTCoef[Yidx][DCTidx] -= 1;
+                cj.mcuarray.MCUs[MCUidx].DCTCoef[Yidx][DCTidx] -= depth;
                 return;
             }
             if (1 < cj.mcuarray.MCUs[MCUidx].DCTCoef[Yidx][DCTidx])
             {
-                cj.mcuarray.MCUs[MCUidx].DCTCoef[Yidx][DCTidx] += 1;
+                cj.mcuarray.MCUs[MCUidx].DCTCoef[Yidx][DCTidx] += depth;
                 return;
             }
         }
@@ -165,10 +202,12 @@ namespace ConsoleApplication1
                     {
                         for (int l = 0; l < cj.mcuarray.numBlock; l++)
                         {
+                            //for (int k = 0; k < 64; k++)
                             for (int k = 0; k < 64; k++)
                             {
                                 idx = (b_x * 4 / cj.mcuarray.HY) + x + (y * cj.mcuarray.MCUWidth) + (b_y * 4 * cj.mcuarray.MCUWidth/ cj.mcuarray.VY);
-                                buf[count] = (byte)cj.mcuarray.MCUs[idx].DCTCoef[l][k];
+                                //buf[count] = (byte)(cj.mcuarray.MCUs[idx].DCTCoef[l][k] - (cj.mcuarray.MCUs[idx].DCTCoef[l][k] % 2));
+                                buf[count] = (byte)(cj.mcuarray.MCUs[idx].DCTCoef[l][k]);
                                 count++;
                             }
                         }
@@ -243,7 +282,8 @@ namespace ConsoleApplication1
                     }
                     
                     cbs_calc = new CbitStream(sha.ComputeHash(GetHashKey(ref temp, passwd, 0, i, j)));
-                    if (!CheckCbs(cbs_calc, cbs_extr, 80))
+
+                    if (!CheckCbs(cbs_calc, cbs_extr, 48))
                     {
                         err_count++;
                         error[i + j * (cj.mcuarray.MCUWidth * cj.mcuarray.HY / 4)] = 1;
@@ -266,12 +306,9 @@ namespace ConsoleApplication1
         {
             int val = 0;
 
-            //for (int k = 0; k < EMBED_BITS_PROFILE[cj.mcuarray.SubSamplingPattern][cj.mcuarray.colorTable[Yidx]]; k++)
-            //{
-            //    val = Math.Abs(cj.mcuarray.MCUs[MCUidx].DCTCoef[Yidx][k] % 2);
-            //    cbs.CatchBit(val);
-            //    cj.mcuarray.MCUs[MCUidx].DCTCoef[Yidx][k] -= (cj.mcuarray.MCUs[MCUidx].DCTCoef[Yidx][k] % 2);
-            //}
+            val = Math.Abs(cj.mcuarray.MCUs[MCUidx].DCTCoef[Yidx][0] % 2);
+            cbs.CatchBit(val);
+            cj.mcuarray.MCUs[MCUidx].DCTCoef[Yidx][0] -= (cj.mcuarray.MCUs[MCUidx].DCTCoef[Yidx][0] % 2);
         }
 
         /// <summary>
@@ -296,112 +333,6 @@ namespace ConsoleApplication1
             return true;
         }
 
-        ////儀式用関数群
-        ////逆差分化
-        ////public static void UnDiffDC(ref Cjpeg cj)
-        ////{
-        ////    int color = 0;
-        ////    for (int i = 0; i < cj.mcuarray.MCULength; i++)
-        ////    {
-        ////        for (int j = 0; j < cj.mcuarray.numBlock; j++)
-        ////        {
-        ////            //最初のMCU
-        ////            if (i==0)
-        ////            {
-        ////                if(j != cj.mcuarray.colorFirstIdx[color])
-        ////                {
-        ////                    cj.mcuarray.MCUs[i].DCTCoef[j][0] += cj.mcuarray.MCUs[i].DCTCoef[j - 1][0];
-        ////                }
-        ////            }
-        ////            //二個目以降のMCU
-        ////            else
-        ////            {
-        ////                if (j == cj.mcuarray.colorFirstIdx[color])
-        ////                {
-        ////                    cj.mcuarray.MCUs[i].DCTCoef[j][0] += 
-        ////                        cj.mcuarray.MCUs[i - 1].DCTCoef[cj.mcuarray.colorLastIdx[color]][0];
-        ////                }
-        ////                else
-        ////                {
-        ////                    cj.mcuarray.MCUs[i].DCTCoef[j][0] += cj.mcuarray.MCUs[i].DCTCoef[j - 1][0];
-        ////                }
-        ////            }
-        ////            if (j == cj.mcuarray.colorLastIdx[color])
-        ////            {
-        ////                color++;
-        ////            }
-        ////        }
-        ////        color = 0;
-        ////    }
-        ////}
-
-        ////差分化
-        //static void DiffDC(ref Cjpeg cj)
-        //{
-        //    int color = 2;
-        //    for (int i = cj.mcuarray.MCULength - 1; i >-1; i--)
-        //    {
-        //        for (int j = cj.mcuarray.numBlock - 1; j > -1; j--)
-        //        {
-        //            if (i == 0)
-        //            {
-        //                if (j != cj.mcuarray.colorFirstIdx[color])
-        //                {
-        //                    cj.mcuarray.MCUs[i].DCTCoef[j][0] -= cj.mcuarray.MCUs[i].DCTCoef[j - 1][0];
-        //                }
-        //            }
-        //            else
-        //            {
-        //                if (j == cj.mcuarray.colorFirstIdx[color])
-        //                {
-        //                    cj.mcuarray.MCUs[i].DCTCoef[j][0] -=
-        //                        cj.mcuarray.MCUs[i-1].DCTCoef[cj.mcuarray.colorLastIdx[color]][0];
-        //                }
-        //                else
-        //                {
-        //                    cj.mcuarray.MCUs[i].DCTCoef[j][0] -= cj.mcuarray.MCUs[i].DCTCoef[j - 1][0];
-        //                }
-        //            }
-        //            if (j == cj.mcuarray.colorFirstIdx[color])
-        //            {
-        //                color--;
-        //            }
-        //        }
-        //        color = 2;
-        //    }
-        //}
-        
-        ////逆量子化
-        //static void UnQuantize(ref Cjpeg cj)
-        //{
-        //    for (int i = 0; i < cj.mcuarray.MCULength; i++)
-        //    {
-        //        for (int j = 0; j < cj.mcuarray.numBlock; j++)
-        //        {
-        //            for (int k = 0; k < 64; k++)
-        //            {
-        //                cj.mcuarray.MCUs[i].DCTCoef[j][k] *=
-        //                    cj.dqt.table[cj.sof.DQTSelecter[cj.mcuarray.colorTable[j]]][k];
-        //            }
-        //        }
-        //    }
-        //}
-        ////量子化
-        //static void Quantize(ref Cjpeg cj)
-        //{
-        //    for (int i = 0; i < cj.mcuarray.MCULength; i++)
-        //    {
-        //        for (int j = 0; j < cj.mcuarray.numBlock; j++)
-        //        {
-        //            for (int k = 0; k < 64; k++)
-        //            {
-        //                cj.mcuarray.MCUs[i].DCTCoef[j][k] =
-        //                    (int)Math.Round((double)cj.mcuarray.MCUs[i].DCTCoef[j][k] / (double)cj.dqt.table[cj.sof.DQTSelecter[cj.mcuarray.colorTable[j]]][k]);
-        //            }
-        //        }
-        //    }
-        //}
-
         //平均
         double PutAverage(int[] data)
         {
@@ -413,5 +344,14 @@ namespace ConsoleApplication1
             return (sum / data.Length);
         }
 
+        static int NearestMultipleofEight(int a, int EvenOdd)
+        {
+            if (EvenOdd == 0)
+            {
+                return (int)Math.Ceiling((double)a / 8);
+            }
+            return (int)Math.Floor((double)a / 8);
+            
+        }
     }
 }

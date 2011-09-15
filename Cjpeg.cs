@@ -99,7 +99,6 @@ namespace ConsoleApplication1
                     for (int k = 0; k < 64; k++)
                     {
                         mcuarray.MCUs[i].DCTCoef[j][k] *= dqt.table[sof.DQTSelecter[mcuarray.colorTable[j]]][k];
-                        
                     }
                 }
             }
@@ -117,7 +116,7 @@ namespace ConsoleApplication1
                 {
                     for (int k = 0; k < 64; k++)
                     {
-                        buf = mcuarray.MCUs[i].DCTCoef[j][k] / dqt.table[sof.DQTSelecter[mcuarray.colorTable[j]]][k];
+                        buf = (double)mcuarray.MCUs[i].DCTCoef[j][k] / dqt.table[sof.DQTSelecter[mcuarray.colorTable[j]]][k];
                         mcuarray.MCUs[i].DCTCoef[j][k] = (int)Math.Round(buf);
                     }
                 }

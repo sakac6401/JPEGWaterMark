@@ -71,7 +71,7 @@ namespace ConsoleApplication1
                 return -1;
             }
 
-            dst = (data[(int)Math.Floor((double)(bit_seek / 8))]
+            dst = (data[(int)Math.Floor(((double)bit_seek / 8))]
                 & (1 << (7 - (bit_seek % 8))))
                 >> (7 - (bit_seek % 8));
             bit_seek++;
