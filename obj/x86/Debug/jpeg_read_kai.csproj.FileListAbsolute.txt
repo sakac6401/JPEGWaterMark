@@ -35,3 +35,7 @@ H:\Documents and Settings\mitsu\hoge\obj\x86\Debug\GenerateResource.read.1.tlog
 H:\Documents and Settings\mitsu\hoge\obj\x86\Debug\GenerateResource.write.1.tlog
 H:\Documents and Settings\mitsu\hoge\bin\Debug\jpeg_read_kai.exe
 H:\Documents and Settings\mitsu\hoge\bin\Debug\jpeg_read_kai.pdb
+H:\Documents and Settings\mitsu\hoge\bin\Debug\BitMiracle.LibJpeg.NET.dll
+H:\Documents and Settings\mitsu\hoge\bin\Debug\ImageMagickNET.dll
+H:\Documents and Settings\mitsu\hoge\bin\Debug\BitMiracle.LibJpeg.NET.xml
+H:\Documents and Settings\mitsu\hoge\bin\Debug\DomaMagick.dll

@@ -290,7 +290,8 @@ namespace ConsoleApplication1
                     }
                 }
             }
-            Console.WriteLine("error_count=" + err_count);
+            //Console.Write(err_count + ",");
+            Console.Write((double)err_count / cj.mcuarray.MCULength * 16);
             return error;
         }
 

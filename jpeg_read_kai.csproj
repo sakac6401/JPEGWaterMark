@@ -49,6 +49,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BitMiracle.LibJpeg.NET">
+      <HintPath>..\デスクトップ\libjpeg.net_bin-1.2.300.0\BitMiracle.LibJpeg.NET.dll</HintPath>
+    </Reference>
+    <Reference Include="DomaMagick">
+      <HintPath>..\デスクトップ\domamagick-1.2.3\Bin\DomaMagick.dll</HintPath>
+    </Reference>
+    <Reference Include="ImageMagickNET">
+      <HintPath>..\デスクトップ\ImageMagickNET\bin\ReleaseQ16\ImageMagickNET.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />

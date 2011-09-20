@@ -8,6 +8,8 @@ using System.Drawing;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using ImageMagickNET;
+using Doma.Magick.Q16;
 
 namespace ConsoleApplication1
 {
@@ -32,7 +34,9 @@ namespace ConsoleApplication1
             CBitmap cbmp = null;
             string passwd = "aaaaa";
             string dst_path;
-
+            string srctarget = @"\img\gazouQ";
+            string embtarget = @"\emb\gazouQ";
+            string resavetarget = @"\resave\gazouQ";
             string srcPath = args[0];
             string dstPath = args[0].Replace(".jpg", "_m.jpg");
 
@@ -82,24 +86,93 @@ namespace ConsoleApplication1
                         cj_raw = new Cjpeg(dst_path);
                         CJpegDecoderT.HuffmanDecode(ref cj_raw);
                         int[] error = WaterMarkingM.Check(ref cj_raw, "aaaaa");
+
                         CBitmap dst = new CBitmap(new Bitmap(args[0]));
                         dst.CheckError(ref cj_raw, error);
                         dst.ToBitmap().Save(dstPath);
 
                         break;
 
-                    case "c":
-                        for (int i = 0; i < args.Length; i++)
-                        {
-                            dstPath = args[i].Replace(".jpg", "_m.jpg");
-                            cj_raw = new Cjpeg(dstPath);
-                            CJpegDecoderT.HuffmanDecode(ref cj_raw);
-                            error = WaterMarkingDC.Check(ref cj_raw, "aaaaa");
-                            cbmp = new CBitmap(new Bitmap(dstPath));
-                            cbmp.CheckError(ref cj_raw, error);
-                            cbmp.ToBitmap().Save(dstPath.Replace(".jpg", ".bmp"));
-                        }
+                    case "doma":
+                        MagickWandHandle mw = Wand.NewMagickWand();
                         break;
+
+                    case "e":
+                        srcPath = Console.ReadLine();
+                        dstPath = srcPath.Replace(".jpg", "_m.jpg");
+                        cj_raw = new Cjpeg(srcPath);
+                        CJpegDecoderT.HuffmanDecode(ref cj_raw);
+                        WaterMarkingDC.Embed(ref cj_raw, passwd);
+                        CJpegEncoderT.WriteFile(ref cj_raw, dstPath);
+                        return;
+
+                    case "c":
+                        srcPath = Console.ReadLine();
+                        dstPath = srcPath.Replace(".jpg", ".bmp");
+                        cbmp = new CBitmap(new Bitmap(srcPath));
+                        cj_raw = new Cjpeg(srcPath);
+                        CJpegDecoderT.HuffmanDecode(ref cj_raw);
+                        error = WaterMarkingDC.Check(ref cj_raw, passwd);
+                        cbmp.CheckError(ref cj_raw, error);
+                        cbmp.ToBitmap().Save(dstPath);
+
+                        return;
+
+                    case "p":
+                        srcPath = Console.ReadLine();
+                        dstPath = srcPath.Replace(".jpg", "_m.jpg");
+                        cj_raw = new Cjpeg(srcPath);
+                        CJpegDecoderT.HuffmanDecode(ref cj_raw);
+                        cj_raw.UnDiffDC();
+                        cj_raw.mcuarray.MCUs[0].DCTCoef[0][0] = 1;
+                        cj_raw.mcuarray.MCUs[0].DCTCoef[1][0] = 1;
+                        cj_raw.mcuarray.MCUs[0].DCTCoef[2][0] = 1;
+                        cj_raw.DiffDC();
+                        CJpegEncoderT.WriteFile(ref cj_raw, dstPath);
+                        return;
+
+                    case "ea":
+                        for (int i = 50; i < 101; i++)
+                        {
+                            try
+                            {
+                                srcPath = args[0] + srctarget + i.ToString() + ".jpg";
+                                cj_raw = new Cjpeg(srcPath);
+                                CJpegDecoderT.HuffmanDecode(ref cj_raw);
+                                WaterMarkingDC.Embed(ref cj_raw, "aaaaa");
+                                dstPath = args[0] + embtarget + i.ToString() + "_m.jpg";
+                                CJpegEncoderT.WriteFile(ref cj_raw, dstPath);
+                                Console.WriteLine("wrote " + dstPath);
+                            }
+                            catch
+                            {
+
+                            }
+                        }
+                        return;
+
+                    case "ca":
+                        StreamWriter log = new StreamWriter(args[0] + @"\FP.dat");
+                        Console.SetOut(log);
+                        for (int i = 50; i<101; i++)
+                        {
+                            try
+                            {
+                                srcPath = args[0] + resavetarget + i.ToString() + "_m.jpg";
+                                cj_raw = new Cjpeg(srcPath);
+                                CJpegDecoderT.HuffmanDecode(ref cj_raw);
+                                Console.Write(i.ToString() + " ");
+                                error = WaterMarkingDC.Check(ref cj_raw, "aaaaa");
+                                Console.WriteLine();
+                            }
+                            catch
+                            {
+
+                            }
+                        }
+                        log.Close();
+                        
+                        return;
 
                     case "o":
                         //原画像オープン
@@ -130,17 +203,7 @@ namespace ConsoleApplication1
 
                         break;
 
-                    case "e":
-                        for (int i = 0; i < args.Length; i++)
-                        {
-                            cj_raw = new Cjpeg(args[i]);
-                            CJpegDecoderT.HuffmanDecode(ref cj_raw);
-                            WaterMarkingDC.Embed(ref cj_raw, "aaaaa");
-                            dstPath = args[i].Replace(".jpg", "_m.jpg");
-                            CJpegEncoderT.WriteFile(ref cj_raw, dstPath);
-                            Console.WriteLine("wrote " + dstPath);
-                        }
-                        break;
+
                         
                     case "f":
                         cj_raw = new Cjpeg(srcPath);
